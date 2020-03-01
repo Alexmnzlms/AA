@@ -1,21 +1,29 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as col
+import matplotlib.lines as line
 from sklearn import datasets
 import matplotlib.patches as mpatches
 import math
-from collections import defaultdict
 
 
 '''
 Parte 1
 '''
-
+print('-----------------------------------------------------------------------')
+print('Parte 1')
+print('-----------------------------------------------------------------------')
 iris = datasets.load_iris()
 X = iris.data[:, 2:4]
 y = iris.target
 labels = iris.target_names
 feature = iris.feature_names
+
+print('Datos:')
+print(list(X))
+print('Objetivo:')
+print(y)
+
 cols = ['red','blue','green']
 colist=[]
 for i in y:
@@ -42,11 +50,14 @@ legend_elements = [mpatches.Patch(color=cols[0], label=labels[0]),
                    mpatches.Patch(color=cols[1], label=labels[1]),
                    mpatches.Patch(color=cols[2], label=labels[2])]
 plt.legend(handles=legend_elements)
-
+plt.show()
 
 '''
 Parte 2
 '''
+print('-----------------------------------------------------------------------')
+print('Parte 2')
+print('-----------------------------------------------------------------------')
 c = list(zip(X, y))
 a, b = zip(*c)
 print('Elementos del cojunto (tamaño',len(c),')')
@@ -89,7 +100,7 @@ for i in b_training:
     else:
         colist_training.append('green')
 
-
+print()
 print('Elementos del cojunto training (tamaño',len(training),', porcentaje',math.ceil(porcentaje*100),'%)')
 print(a_training)
 print()
@@ -126,6 +137,8 @@ for i in b_test:
         colist_test.append('blue')
     else:
         colist_test.append('green')
+
+print()
 print('Elementos del cojunto test (tamaño',len(test),', porcentaje',math.ceil((1-porcentaje)*100),'%)')
 print(a_test)
 print()
@@ -151,3 +164,31 @@ plt.show()
 '''
 Parte 3
 '''
+print('-----------------------------------------------------------------------')
+print('Parte 3')
+print('-----------------------------------------------------------------------')
+min = 0
+max = math.pi*2
+n = 100
+x = np.linspace(min,max,num=n)
+print(len(x),'valores equiespaciados entre', min,'y', max)
+print(x)
+y = list()
+z = list()
+w = list()
+for i in x:
+    y.append(math.sin(i))
+    z.append(math.cos(i))
+    w.append(math.sin(i) + math.cos(i))
+plt.figure(4, figsize=(8, 6))
+plt.clf()
+plt.plot(x, y, c = 'black', linestyle='dashed')
+plt.plot(x, z, c = 'blue', linestyle='dashed')
+plt.plot(x, w, c = 'red', linestyle='dashed')
+
+legend_elements = [mpatches.Patch(color='black', label='sin(x)'),
+                   mpatches.Patch(color='blue', label='cos(x)'),
+                   mpatches.Patch(color='red', label='sin(x)+cos(x)')]
+plt.legend(handles=legend_elements)
+
+plt.show()
