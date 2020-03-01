@@ -1,18 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as col
-import matplotlib.lines as line
 from sklearn import datasets
 import matplotlib.patches as mpatches
 import math
-
-
+##################################################################################
 '''
 Parte 1
 '''
 print('-----------------------------------------------------------------------')
 print('Parte 1')
 print('-----------------------------------------------------------------------')
+##################################################################################
 iris = datasets.load_iris()
 X = iris.data[:, 2:4]
 y = iris.target
@@ -36,13 +35,10 @@ for i in y:
 
 plt.figure(1, figsize=(8, 6))
 plt.clf()
-
-# Plot the training points
 plt.scatter(X[:, 0], X[:, 1], c=colist)
 plt.xlabel(feature[2])
 plt.ylabel(feature[3])
 plt.title('Gráfico 1: Total de valores de Iris')
-
 plt.xticks(())
 plt.yticks(())
 
@@ -51,15 +47,17 @@ legend_elements = [mpatches.Patch(color=cols[0], label=labels[0]),
                    mpatches.Patch(color=cols[2], label=labels[2])]
 plt.legend(handles=legend_elements)
 plt.show()
-
+##################################################################################
 '''
 Parte 2
 '''
 print('-----------------------------------------------------------------------')
 print('Parte 2')
 print('-----------------------------------------------------------------------')
+##################################################################################
 c = list(zip(X, y))
 a, b = zip(*c)
+
 print('Elementos del cojunto (tamaño',len(c),')')
 print(a)
 print()
@@ -108,18 +106,12 @@ print(b_training)
 
 plt.figure(2, figsize=(8, 6))
 plt.clf()
-
 plt.scatter(X_training_x, X_training_y, c=colist_training)
 plt.xlabel(feature[2])
 plt.ylabel(feature[3])
 plt.title('Gráfico 2: Valores del conjunto training')
-
 plt.xticks(())
 plt.yticks(())
-
-legend_elements = [mpatches.Patch(color=cols[0], label=labels[0]),
-                   mpatches.Patch(color=cols[1], label=labels[1]),
-                   mpatches.Patch(color=cols[2], label=labels[2])]
 plt.legend(handles=legend_elements)
 
 a_test, b_test = zip(*test)
@@ -146,33 +138,30 @@ print(b_test)
 
 plt.figure(3, figsize=(8, 6))
 plt.clf()
-
 plt.scatter(X_test_x, X_test_y, c=colist_test)
 plt.xlabel(feature[2])
 plt.ylabel(feature[3])
 plt.title('Gráfico 3: Valores del conjunto test')
-
 plt.xticks(())
 plt.yticks(())
-
-legend_elements = [mpatches.Patch(color=cols[0], label=labels[0]),
-                   mpatches.Patch(color=cols[1], label=labels[1]),
-                   mpatches.Patch(color=cols[2], label=labels[2])]
 plt.legend(handles=legend_elements)
 plt.show()
-
+##################################################################################
 '''
 Parte 3
 '''
 print('-----------------------------------------------------------------------')
 print('Parte 3')
 print('-----------------------------------------------------------------------')
+##################################################################################
 min = 0
 max = math.pi*2
 n = 100
 x = np.linspace(min,max,num=n)
+
 print(len(x),'valores equiespaciados entre', min,'y', max)
 print(x)
+
 y = list()
 z = list()
 w = list()
@@ -180,15 +169,17 @@ for i in x:
     y.append(math.sin(i))
     z.append(math.cos(i))
     w.append(math.sin(i) + math.cos(i))
+
 plt.figure(4, figsize=(8, 6))
 plt.clf()
 plt.plot(x, y, c = 'black', linestyle='dashed')
 plt.plot(x, z, c = 'blue', linestyle='dashed')
 plt.plot(x, w, c = 'red', linestyle='dashed')
+plt.title('Gráfico 4: Funciones sen y cos')
 
 legend_elements = [mpatches.Patch(color='black', label='sin(x)'),
                    mpatches.Patch(color='blue', label='cos(x)'),
                    mpatches.Patch(color='red', label='sin(x)+cos(x)')]
 plt.legend(handles=legend_elements)
-
 plt.show()
+##################################################################################
