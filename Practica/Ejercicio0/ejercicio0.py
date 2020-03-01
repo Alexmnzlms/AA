@@ -4,6 +4,7 @@ import matplotlib.colors as col
 from sklearn import datasets
 import matplotlib.patches as mpatches
 import math
+from collections import defaultdict
 
 
 '''
@@ -32,12 +33,7 @@ plt.clf()
 plt.scatter(X[:, 0], X[:, 1], c=colist)
 plt.xlabel(feature[2])
 plt.ylabel(feature[3])
-plt.title('Gráfico 1')
-
-x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5
-y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5
-plt.xlim(x_min, x_max)
-plt.ylim(y_min, y_max)
+plt.title('Gráfico 1: Total de valores de Iris')
 
 plt.xticks(())
 plt.yticks(())
@@ -46,7 +42,6 @@ legend_elements = [mpatches.Patch(color=cols[0], label=labels[0]),
                    mpatches.Patch(color=cols[1], label=labels[1]),
                    mpatches.Patch(color=cols[2], label=labels[2])]
 plt.legend(handles=legend_elements)
-plt.show()
 
 
 '''
@@ -70,8 +65,6 @@ for i in range(s):
     if i not in idxtraining:
         idxtest.append(i)
 
-
-
 training = list()
 for i in idxtraining:
     training.append(c[i])
@@ -80,22 +73,80 @@ test = list()
 for i in idxtest:
     test.append(c[i])
 
-print()
-a, b = zip(*training)
+a_training, b_training = zip(*training)
+X_training_x = list()
+X_training_y = list()
+for i in a_training:
+    X_training_x.append(i[0])
+    X_training_y.append(i[1])
+
+colist_training=[]
+for i in b_training:
+    if i == 0:
+        colist_training.append('red')
+    elif i == 1:
+        colist_training.append('blue')
+    else:
+        colist_training.append('green')
+
+
 print('Elementos del cojunto training (tamaño',len(training),', porcentaje',math.ceil(porcentaje*100),'%)')
-print(a)
+print(a_training)
 print()
-print(b)
+print(b_training)
 
-print()
-a, b = zip(*test)
+plt.figure(2, figsize=(8, 6))
+plt.clf()
+
+plt.scatter(X_training_x, X_training_y, c=colist_training)
+plt.xlabel(feature[2])
+plt.ylabel(feature[3])
+plt.title('Gráfico 2: Valores del conjunto training')
+
+plt.xticks(())
+plt.yticks(())
+
+legend_elements = [mpatches.Patch(color=cols[0], label=labels[0]),
+                   mpatches.Patch(color=cols[1], label=labels[1]),
+                   mpatches.Patch(color=cols[2], label=labels[2])]
+plt.legend(handles=legend_elements)
+
+a_test, b_test = zip(*test)
+X_test_x = list()
+X_test_y = list()
+for i in a_test:
+    X_test_x.append(i[0])
+    X_test_y.append(i[1])
+
+colist_test=[]
+for i in b_test:
+    if i == 0:
+        colist_test.append('red')
+    elif i == 1:
+        colist_test.append('blue')
+    else:
+        colist_test.append('green')
 print('Elementos del cojunto test (tamaño',len(test),', porcentaje',math.ceil((1-porcentaje)*100),'%)')
-print(a)
+print(a_test)
 print()
-print(b)
+print(b_test)
 
-input("Pulsa intro para continuar")
+plt.figure(3, figsize=(8, 6))
+plt.clf()
 
+plt.scatter(X_test_x, X_test_y, c=colist_test)
+plt.xlabel(feature[2])
+plt.ylabel(feature[3])
+plt.title('Gráfico 3: Valores del conjunto test')
+
+plt.xticks(())
+plt.yticks(())
+
+legend_elements = [mpatches.Patch(color=cols[0], label=labels[0]),
+                   mpatches.Patch(color=cols[1], label=labels[1]),
+                   mpatches.Patch(color=cols[2], label=labels[2])]
+plt.legend(handles=legend_elements)
+plt.show()
 
 '''
 Parte 3
