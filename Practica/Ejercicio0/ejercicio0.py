@@ -58,29 +58,62 @@ print('-----------------------------------------------------------------------')
 c = list(zip(X, y))
 a, b = zip(*c)
 
+n = len(iris.target_names)
+datos = list()
+objetivo = list()
+for i in range(n):
+    datos.append(list())
+    objetivo.append(list())
+
+for i in range(n):
+    for j, k in c:
+        if k == i:
+            datos[i].append(j)
+            objetivo[i].append(k)
+
+conjunto = list()
+for i in range(n):
+    conjunto.append(list(zip(datos[i],objetivo[i])))
+
 print('Elementos del cojunto (tamaño',len(c),')')
 print(a)
 print()
 print(b)
 
 porcentaje = 0.8
-s = len(c)
-m = math.floor(len(c)*porcentaje)
-idxtraining = np.random.choice(s, size=m, replace=False)
-idxtraining.sort()
-idxtest = list()
 
-for i in range(s):
-    if i not in idxtraining:
-        idxtest.append(i)
+s = list()
+m = list()
+for i in range(n):
+    s.append(len(conjunto[i]))
+    m.append(math.ceil((len(conjunto[i]))*porcentaje))
+
+idxtraining = list()
+for i in range(n):
+    idxtraining.append(np.random.choice(s[i], size=m[i], replace=False))
+    idxtraining[i].sort()
+
+idxtest = list()
+for i in range(n):
+    idxtest.append(list())
+    for j in range(s[i]):
+        if j not in idxtraining[i]:
+            idxtest[i].append(j)
+
+for i in range(n):
+    print()
+    print('Indices ecogidos para el conjunto training para la clase',labels[i],idxtraining[i])
+    print('Indices ecogidos para el conjunto test para la clase',labels[i],idxtest[i])
 
 training = list()
-for i in idxtraining:
-    training.append(c[i])
+for i in range(n):
+    for j in idxtraining[i]:
+        training.append(conjunto[i][j])
 
 test = list()
-for i in idxtest:
-    test.append(c[i])
+for i in range(n):
+    for j in idxtest[i]:
+        test.append(conjunto[i][j])
 
 a_training, b_training = zip(*training)
 X_training_x = list()
