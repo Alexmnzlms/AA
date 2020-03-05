@@ -6,6 +6,7 @@ Nombre Estudiante: Alejandro Manzanares Lemus
 
 import numpy as np
 import matplotlib.pyplot as plt
+import sympy as sym
 
 np.random.seed(1)
 
@@ -13,15 +14,17 @@ print('EJERCICIO SOBRE LA BUSQUEDA ITERATIVA DE OPTIMOS\n')
 print('Ejercicio 1\n')
 
 def E(u,v):
-    return #function
+    return np.float64(u*math.e**v - 2*v*math.e**(u*-1))**2)
 
 #Derivada parcial de E con respecto a u
 def dEu(u,v):
-    return #Derivada parcial de E con respecto a u
+    x,y = sp.Symbol('u v')
+    return np.flota64(sym.diff((u*math.e**v - 2*v*math.e**(u*-1))**2,x))
 
 #Derivada parcial de E con respecto a v
 def dEv(u,v):
-    return #Derivada parcial de E con respecto a v
+    x,y = sp.Symbol('u v')
+    return np.flota64(sym.diff((u*math.e**v - 2*v*math.e**(u*-1))**2,y))
 
 #Gradiente de E
 def gradE(u,v):
@@ -37,7 +40,7 @@ def gradient_descent(?):
 eta = 0.01
 maxIter = 10000000000
 error2get = 1e-14
-initial_point = np.array([1.0,-1.0])
+initial_point = np.array([1.0,1.0])
 w, it = gradient_descent(?)
 
 
