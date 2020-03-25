@@ -15,15 +15,21 @@ print('EJERCICIO SOBRE LA BUSQUEDA ITERATIVA DE OPTIMOS\n')
 print('Ejercicio 1\n')
 
 def E(u,v):
-    return np.float((u*math.e**v - 2*v*math.e**(u*-1))**2)
+    return np.float( (u*np.exp(v) - 2*v*np.exp(u*-1))**2 )
+
+def E_1(u,v):
+    return (u*np.exp(v) - 2*v*np.exp(u*-1))**2
+
+def Ep(u,v):
+    return (u*np.exp(v) - 2*v*np.exp(u*-1))**2
 
 #Derivada parcial de E con respecto a u
 def dEu(u,v):
-    return np.float(2*(u*math.e**v - 2*v*math.e**(u*-1))*(math.e**v + 2*v*math.e**(u*-1)))
+    return np.float( 2 * (u*np.exp(v) - 2*v*np.exp((-u))) * (np.exp(v) + 2*v*np.exp((-u))) )
 
 #Derivada parcial de E con respecto a v
 def dEv(u,v):
-    return np.float(2*(u*math.e**v - 2*v*math.e**(u*-1))*(u*math.e**v - 2*math.e**(u*-1)))
+    return np.float( 2 * (u*np.exp(v) - 2*v*np.exp((-u))) * (u*np.exp(v) - 2*np.exp((-u))) )
 
 #Gradiente de E
 def gradE(u,v):
@@ -34,13 +40,13 @@ def gradient_descent(w,n,iterations,min):
     i = 0
     u = w[0]
     v = w[1]
-
     while E(u,v) > min and i < iterations:
-        d = gradE(u,v);
-        u = u - 0.1*dEu(u,v)
-        v = v - 0.1*dEv(u,v)
+        grad = gradE(u,v)
+        u = u - 0.1*grad[0]
+        v = v - 0.1*grad[1]
+        print('E(',u,',',v,'): ', E(u,v), ',' ,i)
         i = i + 1
-        print('E(',u,',',v,'): ', E(u,v), ',' ,iterations-i)
+
 
     w[0] = u
     w[1] = v
@@ -60,22 +66,37 @@ print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
 
 
 # DISPLAY FIGURE
-#from mpl_toolkits.mplot3d import Axes3D
-#x = np.linspace(-30, 30, 50)
-#y = np.linspace(-30, 30, 50)
-#X, Y = np.meshgrid(x, y)
-#Z = E(X, Y) #E_w([X, Y])
-#fig = plt.figure()
-#ax = Axes3D(fig)
-#surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1,
-#                        cstride=1, cmap='jet')
-#min_point = np.array([w[0],w[1]])
-#min_point_ = min_point[:, np.newaxis]
-#ax.plot(min_point_[0], min_point_[1], E(min_point_[0], min_point_[1]), 'r*', markersize=10)
-#ax.set(title='Ejercicio 1.2. Función sobre la que se calcula el descenso de gradiente')
-#ax.set_xlabel('u')
-#ax.set_ylabel('v')
-#ax.set_zlabel('E(u,v)')
+from mpl_toolkits.mplot3d import Axes3D
+x = np.linspace(-30, 30, 50)
+y = np.linspace(-30, 30, 50)
+X, Y = np.meshgrid(x, y)
+
+Z = E_1(X,Y)
+'''
+Z = []
+lim = X[0].size
+for i in range(lim):
+    Z_aux = []
+    for j in range(lim):
+        e = E(X[i][j],Y[i][j])
+        Z_aux.append(e)
+    Z.append(Z_aux)
+
+Z = np.array(Z)
+'''
+print(Z)
+
+fig = plt.figure()
+ax = Axes3D(fig)
+surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1, cstride=1, cmap='jet')
+min_point = np.array([w[0],w[1]])
+min_point_ = min_point[:, np.newaxis]
+ax.plot(min_point_[0], min_point_[1], E(min_point_[0], min_point_[1]), 'r*', markersize=10)
+ax.set(title='Ejercicio 1.2. Función sobre la que se calcula el descenso de gradiente')
+ax.set_xlabel('u')
+ax.set_ylabel('v')
+ax.set_zlabel('E(u,v)')
+plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
