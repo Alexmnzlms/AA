@@ -12,7 +12,7 @@ import math
 np.random.seed(1)
 
 print('EJERCICIO SOBRE LA BUSQUEDA ITERATIVA DE OPTIMOS\n')
-print('Ejercicio 1\n')
+print('Ejercicio 1 y 2\n')
 
 def E(u,v):
     return np.float( (u*np.exp(v) - 2*v*np.exp(u*-1))**2 )
@@ -83,8 +83,7 @@ plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
-print('EJERCICIO SOBRE LA BUSQUEDA ITERATIVA DE OPTIMOS\n')
-print('Ejercicio 2\n')
+print('Ejercicio 3.1\n')
 
 def F(x,y):
     return np.float( (x-2)**2 + 2*(y+2)**2 + (2*np.sin(2*np.pi*x)*np.sin(2*np.pi*y))  )
@@ -167,10 +166,46 @@ ax.set_zlabel('F(x,y)')
 plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
+print('Ejercicio 3.2\n')
 
 eta = 0.1
 maxIter = 50
 error2get = 1e-14
+
+initial_point = np.array([2.1,-2.1])
+print ('------------------------------------------------')
+print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
+w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+print ('Tasa de aprendizaje: ', eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+print ('------------------------------------------------')
+
+initial_point = np.array([3.0,-3.0])
+print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
+w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+print ('Tasa de aprendizaje: ', eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+print ('------------------------------------------------')
+
+initial_point = np.array([1.5,1.5])
+print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
+w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+print ('Tasa de aprendizaje: ', eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+print ('------------------------------------------------')
+
+initial_point = np.array([1.0,-1.0])
+print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
+w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+print ('Tasa de aprendizaje: ', eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+print ('------------------------------------------------')
+
+eta = 0.01
 
 initial_point = np.array([2.1,-2.1])
 print ('------------------------------------------------')
