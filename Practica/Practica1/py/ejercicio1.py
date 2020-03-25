@@ -17,10 +17,7 @@ print('Ejercicio 1\n')
 def E(u,v):
     return np.float( (u*np.exp(v) - 2*v*np.exp(u*-1))**2 )
 
-def E_1(u,v):
-    return (u*np.exp(v) - 2*v*np.exp(u*-1))**2
-
-def Ep(u,v):
+def E_nf(u,v):
     return (u*np.exp(v) - 2*v*np.exp(u*-1))**2
 
 #Derivada parcial de E con respecto a u
@@ -44,7 +41,6 @@ def gradient_descent(w,n,iterations,min):
         grad = gradE(u,v)
         u = u - 0.1*grad[0]
         v = v - 0.1*grad[1]
-        print('E(',u,',',v,'): ', E(u,v), ',' ,i)
         i = i + 1
 
 
@@ -54,13 +50,13 @@ def gradient_descent(w,n,iterations,min):
     return w, iterations
 
 
-eta = 0.01
+eta = 0.1
 maxIter = 10000000000
 error2get = 1e-14
 initial_point = np.array([1.0,1.0])
 w, it = gradient_descent(initial_point,eta,maxIter,error2get);
 
-
+print ('Tasa de aprendizaje: ', eta)
 print ('Numero de iteraciones: ', it)
 print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
 
@@ -71,20 +67,7 @@ x = np.linspace(-30, 30, 50)
 y = np.linspace(-30, 30, 50)
 X, Y = np.meshgrid(x, y)
 
-Z = E_1(X,Y)
-'''
-Z = []
-lim = X[0].size
-for i in range(lim):
-    Z_aux = []
-    for j in range(lim):
-        e = E(X[i][j],Y[i][j])
-        Z_aux.append(e)
-    Z.append(Z_aux)
-
-Z = np.array(Z)
-'''
-print(Z)
+Z = E_nf(X,Y)
 
 fig = plt.figure()
 ax = Axes3D(fig)
@@ -100,4 +83,124 @@ plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
-#Seguir haciendo el ejercicio...
+print('EJERCICIO SOBRE LA BUSQUEDA ITERATIVA DE OPTIMOS\n')
+print('Ejercicio 2\n')
+
+def F(x,y):
+    return np.float( (x-2)**2 + 2*(y+2)**2 + (2*np.sin(2*np.pi*x)*np.sin(2*np.pi*y))  )
+
+def F_nf(x,y):
+    return ( (x-2)**2 + 2*(y+2)**2 + (2*np.sin(2*np.pi*x)*np.sin(2*np.pi*y))  )
+
+#Derivada parcial de E con respecto a u
+def dFx(x,y):
+    return np.float( 2*x + 4*np.pi*np.cos(2*np.pi*x)*np.sin(2*np.pi*y) - 4 )
+
+#Derivada parcial de E con respecto a v
+def dFy(x,y):
+    return np.float( 4*y + 4*np.pi*np.sin(2*np.pi*x)*np.cos(2*np.pi*y) - 8 )
+
+#Gradiente de E
+def gradF(x,y):
+    return np.array([dFx(x,y), dFy(x,y)])
+
+def gradient_descent_1(w,n,iterations,min):
+    print('Funcion gradiente para: ', min, ' -> ',iterations)
+    i = 0
+    u = w[0]
+    v = w[1]
+    while E(u,v) > min and i < iterations:
+        grad = gradF(u,v)
+        u = u - n*grad[0]
+        v = v - n*grad[1]
+        i = i + 1
+
+
+    w[0] = u
+    w[1] = v
+
+    return w, iterations
+
+
+eta = 0.01
+maxIter = 50
+error2get = 1e-14
+initial_point = np.array([1.0,1.0])
+w1, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+
+print ('Tasa de aprendizaje: ', eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+
+eta = 0.1
+maxIter = 50
+error2get = 1e-14
+initial_point = np.array([1.0,1.0])
+w2, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+
+print ('Tasa de aprendizaje: ', eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+
+
+# DISPLAY FIGURE
+from mpl_toolkits.mplot3d import Axes3D
+x = np.linspace(-30, 30, 50)
+y = np.linspace(-30, 30, 50)
+X, Y = np.meshgrid(x, y)
+
+Z = F_nf(X,Y)
+
+fig = plt.figure()
+ax = Axes3D(fig)
+surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1, cstride=1, cmap='jet')
+min_point1 = np.array([w1[0],w1[1]])
+min_point1_ = min_point1[:, np.newaxis]
+ax.plot(min_point1_[0], min_point1_[1], F(min_point1_[0], min_point1_[1]), 'go', markersize=10)
+min_point2 = np.array([w2[0],w2[1]])
+min_point2_ = min_point2[:, np.newaxis]
+ax.plot(min_point2_[0], min_point2_[1], F(min_point2_[0], min_point2_[1]), 'r*', markersize=10)
+ax.set(title='Ejercicio 1.3. Función sobre la que se calcula el descenso de gradiente')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_zlabel('F(x,y)')
+plt.show()
+
+input("\n--- Pulsar tecla para continuar ---\n")
+
+eta = 0.1
+maxIter = 50
+error2get = 1e-14
+
+initial_point = np.array([2.1,-2.1])
+print ('------------------------------------------------')
+print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
+w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+print ('Tasa de aprendizaje: ', eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+print ('------------------------------------------------')
+
+initial_point = np.array([3.0,-3.0])
+print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
+w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+print ('Tasa de aprendizaje: ', eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+print ('------------------------------------------------')
+
+initial_point = np.array([1.5,1.5])
+print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
+w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+print ('Tasa de aprendizaje: ', eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+print ('------------------------------------------------')
+
+initial_point = np.array([1.0,-1.0])
+print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
+w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+print ('Tasa de aprendizaje: ', eta)
+print ('Numero de iteraciones: ', it)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+print ('------------------------------------------------')
