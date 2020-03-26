@@ -47,6 +47,19 @@ def Err(x,y,w):
 
 	return error
 
+def dErr(xj,yj,w):
+	prod_x = np.dot(xj.T,xj)
+	prod_x = 2 * prod_x
+	prod_y = np.dot(xj.T,yj)
+	prod_y = 2 * prod_y
+	prod_w = np.dot(prod_x,w)
+
+	#print('2w: ',prod_w)
+	#print('2y: ',prod_y)
+	#print('2w - 2y: ',prod_w-prod_y)
+
+	return prod_w-prod_y
+
 # Gradiente Descendente Estocastico
 def sgd(x,y,n,iterations):
 	w = np.zeros(x[0].size)
@@ -54,14 +67,15 @@ def sgd(x,y,n,iterations):
 
 	while c < iterations:
 		batch = np.random.choice(np.size(x,0), 128, replace=False)
-		w_ant = np.copy(w)
 		c = c + 1
-		for i in range(np.size(w)):
-			sumatoria = 0
-			for j in batch:
-				sumatoria = sumatoria + x[j][i]*(np.dot(x[j],w.T) - y[j])
+		for j in batch:
+			w_ant = w
+			w = w_ant - n * dErr(x[j],y[j],w_ant)
 
-			w[i] = w_ant[i] -n * (2.0/np.float(np.size(batch))) * sumatoria
+		if np.mean(Err(x,y,w)) > np.mean(Err(x,y,w_ant)):
+			print(c)
+			break
+
 
 	return w
 
@@ -118,7 +132,7 @@ c = list()
 for i in a:
     b.append( w1[2]*i + w1[1]*i + w1[0] )
 for i in a:
-	c.append( w2[2]*i + w2[1]*i + w1[0] )
+	c.append( w2[2]*i + w2[1]*i + w2[0] )
 
 plt.plot(a, b, c = 'black')
 plt.plot(a, c, c = 'grey')
