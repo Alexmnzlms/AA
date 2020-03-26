@@ -75,6 +75,7 @@ x, y = readData('datos/X_train.npy', 'datos/y_train.npy')
 x_test, y_test = readData('datos/X_test.npy', 'datos/y_test.npy')
 
 
+print('Calculando gradiente de la funcion...')
 w1 = sgd(x,y,0.1,1000)
 print(w1.shape)
 print ('Coordenadas obtenidas: (', w1[0], ', ', w1[1], ', ', w1[2],')')
@@ -86,6 +87,7 @@ print ("Eout (medio): ", Err(x_test, y_test, w1))
 
 print('\n')
 
+print('Calculando gradiente de la funcion...')
 w2 = pseudoinverse(x,y)
 print(w2.shape)
 print ('Coordenadas obtenidas: (', w2[0], ', ', w2[1], ', ', w2[2],')')
@@ -186,6 +188,7 @@ plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
 print('Ejercicio 2.3\n')
+print('Calculando gradiente de la funcion...')
 
 x = list()
 for i in space:
@@ -213,7 +216,53 @@ for i in a:
 plt.clf()
 plt.plot(a, b, c = 'black')
 plt.scatter(space[:, 0], space[:, 1], c=colist)
-plt.title('Ejercicio 2.2. Mapa de etiquetas')
+plt.title('Ejercicio 2.3. Ajuste lineal')
+plt.xticks()
+plt.yticks()
+plt.xlabel('x1')
+plt.ylabel('x2')
+legend_elements = [mpatches.Patch(color='black', label='SGD'),
+				   mpatches.Patch(color='blue', label='1'),
+                   mpatches.Patch(color='red', label='-1')]
+plt.legend(handles=legend_elements)
+
+plt.show()
+
+
+input("\n--- Pulsar tecla para continuar ---\n")
+print('Ejercicio 2.5\n')
+print('Calculando gradiente de la funcion...')
+x = list()
+for i in space:
+	x.append([1.0,i[0],i[1],i[0]*i[1],i[0]*i[0],i[1]*i[1]])
+x = np.array(x)
+
+w = sgd(x,f,0.1,1000)
+print ('Coordenadas obtenidas: (', w[0], ', ', w[1], ', ', w[2], ', ', w[3], ', ', w[4], ', ', w[5],')')
+print ("Ein (medio): ", Err(x,f,w))
+
+colist=[]
+for i in f:
+	if i == 1:
+	    colist.append('red')
+	else:
+		colist.append('blue')
+
+a = np.linspace(-0.005,0.25,num=100)
+b = list()
+
+for i in a:
+	b.append( (-w[0] - w[1]*i) / w[2] )
+
+
+plt.clf()
+x = np.linspace(-1.0, 1.05, 100)
+y = np.linspace(-1.0, 1.05, 100)
+X, Y = np.meshgrid(x,y)
+G = w[5]*Y**2 + w[4]*X**2 + w[3]*X*Y + w[2]*Y + w[1]*X + w[0]
+plt.contour(X,Y,G,[0])
+plt.scatter(space[:, 0], space[:, 1], c=colist)
+plt.title('Ejercicio 2.5. Ajuste no lineal')
 plt.xticks()
 plt.yticks()
 plt.xlabel('x1')
