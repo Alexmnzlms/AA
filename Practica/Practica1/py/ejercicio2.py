@@ -79,6 +79,8 @@ w1 = sgd(x,y,0.1,1000)
 print(w1.shape)
 print ('Coordenadas obtenidas: (', w1[0], ', ', w1[1], ', ', w1[2],')')
 print ('Bondad del resultado para grad. descendente estocastico:')
+print ('Tasa de aprendizaje: ', 0.1)
+print ('Numero de iteraciones: ', 1000	)
 print ("Ein (medio): ", Err(x,y,w1))
 print ("Eout (medio): ", Err(x_test, y_test, w1))
 
@@ -226,6 +228,7 @@ plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
 print('Ejercicio 2.4\n')
+print('Son 1000 iteraciones ( TARDA )\n')
 
 ein = 0
 eout = 0

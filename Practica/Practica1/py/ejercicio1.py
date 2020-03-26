@@ -32,13 +32,13 @@ def dEv(u,v):
 def gradE(u,v):
     return np.array([dEu(u,v), dEv(u,v)])
 
-def gradient_descent(w,n,iterations,min):
+def gradient_descent(f,g,w,n,iterations,min):
     print('Funcion gradiente para: ', min, ' -> ',iterations)
     i = 0
     u = w[0]
     v = w[1]
-    while E(u,v) > min and i < iterations:
-        grad = gradE(u,v)
+    while f(u,v) > min and i < iterations:
+        grad = g(u,v)
         u = u - 0.1*grad[0]
         v = v - 0.1*grad[1]
         i = i + 1
@@ -54,7 +54,7 @@ eta = 0.1
 maxIter = 10000000000
 error2get = 1e-14
 initial_point = np.array([1.0,1.0])
-w, it = gradient_descent(initial_point,eta,maxIter,error2get);
+w, it = gradient_descent(E,gradE,initial_point,eta,maxIter,error2get);
 
 print ('Tasa de aprendizaje: ', eta)
 print ('Numero de iteraciones: ', it)
@@ -103,43 +103,26 @@ def dFy(x,y):
 def gradF(x,y):
     return np.array([dFx(x,y), dFy(x,y)])
 
-def gradient_descent_1(w,n,iterations,min):
-    print('Funcion gradiente para: ', min, ' -> ',iterations)
-    i = 0
-    u = w[0]
-    v = w[1]
-    while E(u,v) > min and i < iterations:
-        grad = gradF(u,v)
-        u = u - n*grad[0]
-        v = v - n*grad[1]
-        i = i + 1
-
-
-    w[0] = u
-    w[1] = v
-
-    return w, iterations
-
 
 eta = 0.01
 maxIter = 50
 error2get = 1e-14
 initial_point = np.array([1.0,1.0])
-w1, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+w1, it = gradient_descent(F,gradF,initial_point,eta,maxIter,error2get);
 
 print ('Tasa de aprendizaje: ', eta)
 print ('Numero de iteraciones: ', it)
-print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+print ('Coordenadas obtenidas: (', w1[0], ', ', w1[1],')')
 
 eta = 0.1
 maxIter = 50
 error2get = 1e-14
 initial_point = np.array([1.0,1.0])
-w2, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
+w2, it = gradient_descent(F,gradF,initial_point,eta,maxIter,error2get);
 
 print ('Tasa de aprendizaje: ', eta)
 print ('Numero de iteraciones: ', it)
-print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+print ('Coordenadas obtenidas: (', w2[0], ', ', w2[1],')')
 
 
 # DISPLAY FIGURE
@@ -169,73 +152,35 @@ input("\n--- Pulsar tecla para continuar ---\n")
 print('Ejercicio 3.2\n')
 
 eta = 0.1
-maxIter = 50
-error2get = 1e-14
+maxIter = 1000
+error2get = -np.Infinity
 
-initial_point = np.array([2.1,-2.1])
-print ('------------------------------------------------')
-print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
-w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
-print ('Tasa de aprendizaje: ', eta)
-print ('Numero de iteraciones: ', it)
-print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
-print ('------------------------------------------------')
+initial_point = []
+initial_point.append([2.1,-2.1])
+initial_point.append([3.0,-3.0])
+initial_point.append([1.5,1.5])
+initial_point.append([1.0,-1.0])
+initial_point = np.array(initial_point)
+initial_point1 = np.copy(initial_point)
 
-initial_point = np.array([3.0,-3.0])
-print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
-w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
-print ('Tasa de aprendizaje: ', eta)
-print ('Numero de iteraciones: ', it)
-print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
-print ('------------------------------------------------')
-
-initial_point = np.array([1.5,1.5])
-print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
-w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
-print ('Tasa de aprendizaje: ', eta)
-print ('Numero de iteraciones: ', it)
-print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
-print ('------------------------------------------------')
-
-initial_point = np.array([1.0,-1.0])
-print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
-w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
-print ('Tasa de aprendizaje: ', eta)
-print ('Numero de iteraciones: ', it)
-print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
-print ('------------------------------------------------')
+for i in range(4):
+    ini = initial_point[i]
+    print ('------------------------------------------------')
+    print ('Punto de inicio: (', ini[0], ', ', ini[1],')')
+    w, it = gradient_descent(F,gradF,ini,eta,maxIter,error2get);
+    print ('Tasa de aprendizaje: ', eta)
+    print ('Numero de iteraciones: ', it)
+    print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+    print ('------------------------------------------------')
 
 eta = 0.01
 
-initial_point = np.array([2.1,-2.1])
-print ('------------------------------------------------')
-print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
-w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
-print ('Tasa de aprendizaje: ', eta)
-print ('Numero de iteraciones: ', it)
-print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
-print ('------------------------------------------------')
-
-initial_point = np.array([3.0,-3.0])
-print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
-w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
-print ('Tasa de aprendizaje: ', eta)
-print ('Numero de iteraciones: ', it)
-print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
-print ('------------------------------------------------')
-
-initial_point = np.array([1.5,1.5])
-print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
-w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
-print ('Tasa de aprendizaje: ', eta)
-print ('Numero de iteraciones: ', it)
-print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
-print ('------------------------------------------------')
-
-initial_point = np.array([1.0,-1.0])
-print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
-w, it = gradient_descent_1(initial_point,eta,maxIter,error2get);
-print ('Tasa de aprendizaje: ', eta)
-print ('Numero de iteraciones: ', it)
-print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
-print ('------------------------------------------------')
+for i in range(4):
+    ini = initial_point1[i]
+    print ('------------------------------------------------')
+    print ('Punto de inicio: (', ini[0], ', ', ini[1],')')
+    w, it = gradient_descent(F,gradF,ini,eta,maxIter,error2get);
+    print ('Tasa de aprendizaje: ', eta)
+    print ('Numero de iteraciones: ', it)
+    print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+    print ('------------------------------------------------')
