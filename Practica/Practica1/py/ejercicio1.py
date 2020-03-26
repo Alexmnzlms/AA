@@ -46,6 +46,7 @@ def gradE(u,v):
 #   n   -> Tasa de aprendizaje
 #   iterations  -> Numero máximo de iteraciones
 #   min -> Valor minimo a alcanzar
+#   Devuelve las cordenadas w y el numero de iteraciones
 def gradient_descent(f,g,w,n,iterations,min):
     print('Funcion gradiente para: ', min, ' -> ',iterations)
     i = 0
@@ -60,11 +61,12 @@ def gradient_descent(f,g,w,n,iterations,min):
 
     w[0] = u
     w[1] = v
+    iterations = i
 
     return w, iterations
 
 #################################################################################
-
+# Aplicamos el gradiente a la funcion E
 eta = 0.1
 maxIter = 10000000000
 error2get = 1e-14
