@@ -22,11 +22,11 @@ def E_nf(u,v):
 
 #Derivada parcial de E con respecto a u
 def dEu(u,v):
-    return np.float( 2 * (u*np.exp(v) - 2*v*np.exp((-u))) * (np.exp(v) + 2*v*np.exp((-u))) )
+    return np.float( 2 * (u*np.exp(v) - 2*v*np.exp(-u)) * (np.exp(v) + 2*v*np.exp(-u)) )
 
 #Derivada parcial de E con respecto a v
 def dEv(u,v):
-    return np.float( 2 * (u*np.exp(v) - 2*v*np.exp((-u))) * (u*np.exp(v) - 2*np.exp((-u))) )
+    return np.float( 2 * (u*np.exp(v) - 2*v*np.exp(-u)) * (u*np.exp(v) - 2*np.exp(-u)) )
 
 #Gradiente de E
 def gradE(u,v):
@@ -75,7 +75,7 @@ surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1, cstride=1, cmap='je
 min_point = np.array([w[0],w[1]])
 min_point_ = min_point[:, np.newaxis]
 ax.plot(min_point_[0], min_point_[1], E(min_point_[0], min_point_[1]), 'r*', markersize=10)
-ax.set(title='Ejercicio 1.2. Función sobre la que se calcula el descenso de gradiente')
+ax.set(title='Ejercicio 2. Función sobre la que se calcula el descenso de gradiente')
 ax.set_xlabel('u')
 ax.set_ylabel('v')
 ax.set_zlabel('E(u,v)')
@@ -159,7 +159,7 @@ ax.plot(min_point1_[0], min_point1_[1], F(min_point1_[0], min_point1_[1]), 'go',
 min_point2 = np.array([w2[0],w2[1]])
 min_point2_ = min_point2[:, np.newaxis]
 ax.plot(min_point2_[0], min_point2_[1], F(min_point2_[0], min_point2_[1]), 'r*', markersize=10)
-ax.set(title='Ejercicio 1.3. Función sobre la que se calcula el descenso de gradiente')
+ax.set(title='Ejercicio 3.1. Función sobre la que se calcula el descenso de gradiente')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('F(x,y)')
