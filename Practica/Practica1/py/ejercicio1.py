@@ -14,9 +14,15 @@ np.random.seed(1)
 print('EJERCICIO SOBRE LA BUSQUEDA ITERATIVA DE OPTIMOS\n')
 print('Ejercicio 1 y 2\n')
 
+#################################################################################
+#   FUNCIONES EJERCICIO 1 Y GRADIENTE
+#################################################################################
+
+#Funcion E(u,v)
 def E(u,v):
     return np.float( (u*np.exp(v) - 2*v*np.exp(u*-1))**2 )
 
+#Funcion E(u,v) que no devuelve el valor en float64 (Necesario para Z)
 def E_nf(u,v):
     return (u*np.exp(v) - 2*v*np.exp(u*-1))**2
 
@@ -32,6 +38,14 @@ def dEv(u,v):
 def gradE(u,v):
     return np.array([dEu(u,v), dEv(u,v)])
 
+#Funcion de gradiente descendente
+#Parametros:
+#   f   -> Funcion a la que se quiere aplicar el gradiente
+#   g   -> Funcion gradiente que devuelve un vector con las derivadas parciales (gradE y gradF)
+#   w   -> Punto inicial
+#   n   -> Tasa de aprendizaje
+#   iterations  -> Numero máximo de iteraciones
+#   min -> Valor minimo a alcanzar
 def gradient_descent(f,g,w,n,iterations,min):
     print('Funcion gradiente para: ', min, ' -> ',iterations)
     i = 0
@@ -49,6 +63,7 @@ def gradient_descent(f,g,w,n,iterations,min):
 
     return w, iterations
 
+#################################################################################
 
 eta = 0.1
 maxIter = 10000000000
