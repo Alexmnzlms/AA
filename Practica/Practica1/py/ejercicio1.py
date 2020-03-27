@@ -108,26 +108,35 @@ print ('Tasa de aprendizaje: ', eta)
 print ('Numero de iteraciones: ', it)
 print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
 
+# Una vez sabemos el numero de iteraciones, guardamos los valores calculados por
+# el gradiente en cada iteracion para poder graficarlos
+val_x = list()
+val_y = list()
+for i in range(it+1):
+    w , it = gradient_descent(E,gradE,initial_point,eta,i,error2get)
+    val_x.append(w[0])
+    val_y.append(w[1])
+val_x = np.array(val_x)
+val_y = np.array(val_y)
+
 #################################################################################
 # Mostramos el grafico
-x = np.linspace(-1, 1, 50)
-y = np.linspace(-1, 1, 50)
+x = np.linspace(-2, 2, 50)
+y = np.linspace(-2, 2, 50)
 X, Y = np.meshgrid(x, y)
 
 Z = E_nf(X,Y)
 
 fig = plt.figure()
 ax = Axes3D(fig)
-surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1, cstride=1, cmap='jet')
-min_point = np.array([w[0],w[1]])
-min_point_ = min_point[:, np.newaxis]
-ax.plot(min_point_[0], min_point_[1], E(min_point_[0], min_point_[1]), 'r*', markersize=10)
+surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1, cstride=1, cmap='jet',alpha=0.3)
+ax.plot(val_x, val_y, E_nf(val_x, val_y), c = 'red',marker='*')
 ax.set(title='Ejercicio 2. Función sobre la que se calcula el descenso de gradiente')
 ax.set_xlabel('u')
 ax.set_ylabel('v')
 ax.set_zlabel('E(u,v)')
 legend_elements = [mlines.Line2D([],[],linewidth=0,marker='*', color='red', label='Punto calculado con gradiente', markersize=10)]
-plt.legend(handles=legend_elements,loc='lower left')
+plt.legend(handles=legend_elements,loc='lower right')
 plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
@@ -180,13 +189,13 @@ a = np.array(a)
 # Mostramos el grafico de como descienden los gradientes con 0,1 y 0,01 de tasa de aprendizaje
 plt.plot(a, F_nf(valores1_x,valores1_y), c = 'green',marker='o')
 plt.plot(a, F_nf(valores2_x,valores2_y), c = 'red',marker='*')
-plt.title('Ejercicio 3.1. Descanso del valor de la funcion por cada iteracion')
+plt.title('Ejercicio 3.1. Descenso del valor de la función por cada iteración')
 plt.xticks()
 plt.yticks()
 plt.xlabel('Iteraciones')
 plt.ylabel('F(x,y)')
-legend_elements = [mlines.Line2D([], [], color='green',marker='o',markersize=10, label='SGD'),
-				   mlines.Line2D([], [], color='red' ,marker='*',markersize=10, label='Pseudoinversa')]
+legend_elements = [mlines.Line2D([], [], color='green',marker='o',markersize=10, label='Tasa de aprendizaje = 0.01'),
+				   mlines.Line2D([], [], color='red' ,marker='*',markersize=10, label='Tasa de aprendizaje = 0.1')]
 plt.legend(handles=legend_elements)
 
 plt.show()
@@ -221,7 +230,7 @@ print('Ejercicio 3.2\n')
 
 eta = 0.1  # Tasa de aprendizaje
 maxIter = 1000   # Iteraciones maximas
-error2get = -np.Infinity    # Error minimo
+error2get = 0    # Error minimo
 
 # Guardamos en una lista los puntos iniciales
 initial_point = []
@@ -242,6 +251,7 @@ for i in range(4):
     print ('Tasa de aprendizaje: ', eta)
     print ('Numero de iteraciones: ', it)
     print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+    print ('Valor de la funcion para w: ', F(w[0],w[1]))
     print ('------------------------------------------------')
 
 eta = 0.01  # Actualizamos la tasa de aprendizaje
@@ -255,4 +265,5 @@ for i in range(4):
     print ('Tasa de aprendizaje: ', eta)
     print ('Numero de iteraciones: ', it)
     print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
+    print ('Valor de la funcion para w: ', F(w[0],w[1]))
     print ('------------------------------------------------')
