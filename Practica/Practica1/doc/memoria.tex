@@ -1,15 +1,109 @@
-\chapter{Ejercicio 1}
+\chapter{Ejercicio sobre la búsqueda iterativa de óptimos}
 
-\section{Apartado 1}
+\section{Algortimo del gradiente descendente}
+Aqui se muestra la implementacion del algoritmo de gradiente descendente:
+\begin{minted}
+[fontsize=\footnotesize, linenos]
+{python}
+# Funcion de gradiente descendente
+# Parametros:
+#   f   -> Funcion a la que se quiere aplicar el gradiente
+#   g   -> Funcion gradiente que devuelve un vector con las derivadas parciales (gradE y gradF)
+#   w   -> Punto inicial
+#   n   -> Tasa de aprendizaje
+#   iterations  -> Numero máximo de iteraciones
+#   min -> Valor minimo a alcanzar
+#   Devuelve las cordenadas w y el numero de iteraciones
+def gradient_descent(f,g,ini,n,iterations,min):
+    i = 0
+    # Inicializamos w a un vector vacio de 0's
+    w = np.array([0,0],np.float64)
+    # Guardamos los valores iniciales de u y v
+    u = ini[0]
+    v = ini[1]
+    # Mientras no superemos las iteraciones maximas y no obtengamos un valor menos
+    # al minimo:
+    while f(u,v) > min and i < iterations:
+        grad = g(u,v) # Guardamos en grad el gradiente de la funcion
+        # Actualizamos los valores de u y v
+        u = u - n*grad[0]
+        v = v - n*grad[1]
+        i = i + 1
 
-\section{Apartado 2}
+    # Cuando el bucle termina guardamos en w, los ultimos valores de u y v
+    w[0] = u
+    w[1] = v
+    iterations = i
 
-\section{Apartado 3}
+    # Devolvemos w y las iteraciones
+    return w, iterations
 
-\section{Apartado 4}
+\end{minted}
 
-\chapter{Ejercicio 2}
+\section{Aplicacion del gradiente descendente en la funcion E(u,v)}
 
-\section{Apartado 1}
+Funcion E(u,v):\\
+$ E(u,v) = (ue^{v}-2ve^{-u})^{} $\\
+\\
+Derivada parcial de E respecto de u:\\
+$ \frac{\partial E(u,v)}{\partial u} = 2 \cdot (ue^{v}-2ve^{-u}) \cdot (ue^{v}+2ve^{-u}) $\\
+\\
+Derivada parcial de E respecto de v:\\
+$ \frac{\partial E(u,v)}{\partial v} = 2 \cdot (ue^{v}-2ve^{-u}) \cdot (ue^{v}-2e^{-u}) $\\
+\\
+Gradiente:\\
+$ u:=u - \eta \cdot \frac{\partial E(u,v)}{\partial u} \\
+v:=v - \eta \cdot \frac{\partial E(u,v)}{\partial v}$
 
-\section{Apartado 2}
+Para calcular un valor de E(u,v) inferior a $ 10^{-14} $ el algoritmo del gradiente necesita de 10 iteraciones y el primer punto en el que se obtiene es el $ u =  0.04473629039778207 $ y $ v =  0.023958714099141746 $.\\
+\\
+Punto de inicio: ( 1.0 ,  1.0 )\\
+Tasa de aprendizaje:  0.1\\
+Numero de iteraciones:  10\\
+Coordenadas obtenidas: ( 0.04473629039778207 ,  0.023958714099141746 )\\
+
+\begin{figure}[h]
+   \caption{Descenso de gradiente calculado para la funcion E(u,v)}
+   \centering
+   \includegraphics[width=0.75\textwidth]{Figure_1.png}
+\end{figure}
+
+\section{Aplicacion del gradiente descendente en la funcion F(x,y)}
+
+\begin{figure}[h]
+   \centering
+   \caption{Valor de la funcion F por cada iteración del gradiente}
+   \includegraphics[width=0.75\textwidth]{Figure_2.png}
+   \centering
+   \caption{Descenso de gradiente calculado para la funcion F(x,y)}
+   \includegraphics[width=0.75\textwidth]{Figure_3.png}
+\end{figure}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[h]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|}
+\hline
+Punto de inicio & Valor de F(x,y) para $\eta= 0,1$ & Valor de F(x,y) para $\eta = 0,01$ \\ \hline
+(2.1, -2.1) & -0.6609830056250515  & -0.6609830056250515 \\ \cline{1-1}
+(3.0, -3.0) & -0.18464715440123114 & -0.2899238383832796 \\ \cline{1-1}
+(1.5, 1.5)  & -0.09421883629067579 & 18.042072349312036  \\ \cline{1-1}
+(1.0, 1.0)  & -0.18464715440097645 & -0.2899238383832805 \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+\section{Conclusión}
+
+\chapter{Ejercicio sobre Regresión Lineal}
+
+\section{Gradiente Descendente Estocastico vs Pseudoinversa}
+
+\section{Experimento}
+\subsection{Modelo lineal}
+
+\subsection{Modelo no lineal}
+
+\subsection{Conclusión}
