@@ -7,6 +7,7 @@ Nombre Estudiante: Alejandro Manzanares Lemus
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
 
 np.random.seed(1)
 
@@ -119,10 +120,10 @@ plt.xticks()
 plt.yticks()
 plt.xlabel('Intensidad promedio')
 plt.ylabel('Simetria')
-legend_elements = [mpatches.Patch(color='black', label='SGD'),
-				   mpatches.Patch(color='grey', label='Pseudoinversa'),
-                   mpatches.Patch(color='blue', label='5'),
-                   mpatches.Patch(color='red', label='1')]
+legend_elements = [mlines.Line2D([], [], color='black',markersize=15, label='SGD'),
+				   mlines.Line2D([], [], color='grey' ,markersize=15, label='Pseudoinversa'),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='blue', label='5', markersize=10),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='red', label='1', markersize=10)]
 plt.legend(handles=legend_elements)
 
 plt.show()
@@ -180,8 +181,8 @@ plt.xticks()
 plt.yticks()
 plt.xlabel('x1')
 plt.ylabel('x2')
-legend_elements =  [mpatches.Patch(color='blue', label='1'),
-                   mpatches.Patch(color='red', label='-1')]
+legend_elements = [mlines.Line2D([],[],linewidth=0,marker='o', color='blue', label='1', markersize=10),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='red', label='-1', markersize=10)]
 plt.legend(handles=legend_elements)
 
 plt.show()
@@ -221,9 +222,9 @@ plt.xticks()
 plt.yticks()
 plt.xlabel('x1')
 plt.ylabel('x2')
-legend_elements = [mpatches.Patch(color='black', label='SGD'),
-				   mpatches.Patch(color='blue', label='1'),
-                   mpatches.Patch(color='red', label='-1')]
+legend_elements = [mlines.Line2D([], [], color='black',markersize=15, label='SGD'),
+				   mlines.Line2D([],[],linewidth=0,marker='o', color='blue', label='1', markersize=10),
+				   mlines.Line2D([],[],linewidth=0,marker='o', color='red', label='-1', markersize=10)]
 plt.legend(handles=legend_elements)
 
 plt.show()
@@ -267,9 +268,9 @@ plt.xticks()
 plt.yticks()
 plt.xlabel('x1')
 plt.ylabel('x2')
-legend_elements = [mpatches.Patch(color='black', label='SGD'),
-				   mpatches.Patch(color='blue', label='1'),
-                   mpatches.Patch(color='red', label='-1')]
+legend_elements = [mlines.Line2D([], [], color='black',markersize=15, label='SGD'),
+				   mlines.Line2D([],[],linewidth=0,marker='o', color='blue', label='1', markersize=10),
+				   mlines.Line2D([],[],linewidth=0,marker='o', color='red', label='-1', markersize=10)]
 plt.legend(handles=legend_elements)
 
 plt.show()

@@ -6,7 +6,9 @@ Nombre Estudiante: Alejandro Manzanares Lemus
 
 import numpy as np
 import matplotlib.pyplot as plt
-import sympy as sym
+import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
+import matplotlib.markers as mark
 import math
 
 np.random.seed(1)
@@ -48,7 +50,7 @@ def gradE(u,v):
 #   min -> Valor minimo a alcanzar
 #   Devuelve las cordenadas w y el numero de iteraciones
 def gradient_descent(f,g,w,n,iterations,min):
-    print('Funcion gradiente para: ', min, ' -> ',iterations)
+    print('Funcion gradiente para: ', f)
     i = 0
     u = w[0]
     v = w[1]
@@ -67,12 +69,13 @@ def gradient_descent(f,g,w,n,iterations,min):
 
 #################################################################################
 # Aplicamos el gradiente a la funcion E
-eta = 0.1
-maxIter = 10000000000
-error2get = 1e-14
-initial_point = np.array([1.0,1.0])
-w, it = gradient_descent(E,gradE,initial_point,eta,maxIter,error2get);
+eta = 0.1   # Tasa de aprendizaje
+maxIter = 10000000000   #Iteraciones maximas
+error2get = 1e-14   #Error minimo
+initial_point = np.array([1.0,1.0]) #Punto de inicio
+w, it = gradient_descent(E,gradE,initial_point,eta,maxIter,error2get);  #Funcion gradiente
 
+#Imprimimos los resultados
 print ('Tasa de aprendizaje: ', eta)
 print ('Numero de iteraciones: ', it)
 print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
@@ -96,6 +99,8 @@ ax.set(title='Ejercicio 2. Función sobre la que se calcula el descenso de gradi
 ax.set_xlabel('u')
 ax.set_ylabel('v')
 ax.set_zlabel('E(u,v)')
+legend_elements = [mlines.Line2D([],[],linewidth=0,marker='*', color='red', label='Punto calculado con gradiente', markersize=10)]
+plt.legend(handles=legend_elements,loc='lower left')
 plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
@@ -163,6 +168,9 @@ ax.set(title='Ejercicio 3.1. Función sobre la que se calcula el descenso de gra
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('F(x,y)')
+legend_elements = [mlines.Line2D([],[],linewidth=0,marker='*', color='red', label='Punto tasa de aprendizaje = 0.1', markersize=10),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='green', label='Punto tasa de aprendizaje = 0.01', markersize=10)]
+plt.legend(handles=legend_elements,loc='lower left')
 plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
