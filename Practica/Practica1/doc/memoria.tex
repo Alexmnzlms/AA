@@ -1,36 +1,36 @@
 \chapter{Ejercicio sobre la búsqueda iterativa de óptimos}
 
-\section{Algortimo del gradiente descendente}
-Aqui se muestra la implementacion del algoritmo de gradiente descendente:
+\section{Algoritmo del gradiente descendente}
+Aquí se muestra la implementación del algoritmo de gradiente descendente:
 \begin{minted}
 [fontsize=\footnotesize, linenos]
 {python}
-# Funcion de gradiente descendente
-# Parametros:
-#   f   -> Funcion a la que se quiere aplicar el gradiente
-#   g   -> Funcion gradiente que devuelve un vector con las derivadas parciales (gradE y gradF)
+# Función de gradiente descendente
+# Parámetros:
+#   f   -> Función a la que se quiere aplicar el gradiente
+#   g   -> Función gradiente que devuelve un vector con las derivadas parciales (gradE y gradF)
 #   w   -> Punto inicial
 #   n   -> Tasa de aprendizaje
 #   iterations  -> Numero máximo de iteraciones
-#   min -> Valor minimo a alcanzar
-#   Devuelve las cordenadas w y el numero de iteraciones
+#   min -> Valor mínimo a alcanzar
+#   Devuelve las coordenadas w y el numero de iteraciones
 def gradient_descent(f,g,ini,n,iterations,min):
     i = 0
-    # Inicializamos w a un vector vacio de 0's
+    # Inicializamos w a un vector vacío de 0's
     w = np.array([0,0],np.float64)
     # Guardamos los valores iniciales de u y v
     u = ini[0]
     v = ini[1]
-    # Mientras no superemos las iteraciones maximas y no obtengamos un valor menos
-    # al minimo:
+    # Mientras no superemos las iteraciones máximas y no obtengamos un valor menos
+    # al mínimo:
     while f(u,v) > min and i < iterations:
-        grad = g(u,v) # Guardamos en grad el gradiente de la funcion
+        grad = g(u,v) # Guardamos en grad el gradiente de la función
         # Actualizamos los valores de u y v
         u = u - n*grad[0]
         v = v - n*grad[1]
         i = i + 1
 
-    # Cuando el bucle termina guardamos en w, los ultimos valores de u y v
+    # Cuando el bucle termina guardamos en w, los últimos valores de u y v
     w[0] = u
     w[1] = v
     iterations = i
@@ -40,9 +40,9 @@ def gradient_descent(f,g,ini,n,iterations,min):
 
 \end{minted}
 
-\section{Aplicacion del gradiente descendente en la funcion E(u,v)}
+\section{Aplicación del gradiente descendente en la función E(u,v)}
 
-Funcion E(u,v):\\
+Función E(u,v):\\
 $ E(u,v) = (ue^{v}-2ve^{-u})^{} $\\
 \\
 Derivada parcial de E respecto de u:\\
@@ -63,22 +63,28 @@ Numero de iteraciones:  10\\
 Coordenadas obtenidas: ( 0.04473629039778207 ,  0.023958714099141746 )\\
 
 \begin{figure}[h]
-   \caption{Descenso de gradiente calculado para la funcion E(u,v)}
    \centering
    \includegraphics[width=0.75\textwidth]{Figure_1.png}
+   \caption{Descenso de gradiente calculado para la función E(u,v)}
 \end{figure}
-
-\section{Aplicacion del gradiente descendente en la funcion F(x,y)}
-
+\newpage
+\section{Aplicación del gradiente descendente en la función F(x,y)}
+Podemos ver en la figura 1.2, como el valor de la función calculado para un $ \eta = 0.01 $ decrece de manera continua hasta que alcanza el primer punto inferior al valor mínimo requerido --- 0 en este caso ---. A partir de este punto el valor se mantiene constante puesto que hemos alcanzado un mínimo local en la función, y no podemos escapar de el con una tasa de aprendizaje tan pequeña. Sin embargo, el valor de la función para $ \eta = 0.1 $ disminuye de manera muy significativa en la primera iteración, saltando el mínimo local que se obtiene para $ \eta = 0.01 $, pero al seguir obteniendo un valor mayor que el mínimo, el gradiente sigue descendiendo, pasando a un valor superior, y volviendo a decrecer hasta alcanzar un mínimo local. Este mínimo local alcanzado, tiene un valor superior al alcanzado para $ \eta = 0.01 $. Por tanto, para el punto de partida (1,-1), se obtiene un mejor resultado aplicando una menor tasa de aprendizaje.
 \begin{figure}[h]
    \centering
-   \caption{Valor de la funcion F por cada iteración del gradiente}
    \includegraphics[width=0.75\textwidth]{Figure_2.png}
+   \caption{Valor de la función F por cada iteración del gradiente}
+\end{figure}
+\\
+En la figura 1.3 podemos ver gráficamente el descenso del valor calculado para F(x,y) con el paso de las iteraciones. Efectivamente la recta de color verde desciende en solo 4 iteraciones hasta un mínimo local de F y la recta de color rojo, desciende acercándose a este mínimo, pero saltando a un valor superior, debido a que el valor de la función en ese punto continua siendo mayor que 0. Después de alcanzar un valor parecido al inicial, comienza un descenso hasta caer en un mínimo local, que aunque visualmente parezca mejor que el alcanzado por la recta verde, sabemos que es peor.
+\newpage
+\begin{figure}[h]
    \centering
-   \caption{Descenso de gradiente calculado para la funcion F(x,y)}
+   \caption{Descenso de gradiente calculado para la función F(x,y)}
    \includegraphics[width=0.75\textwidth]{Figure_3.png}
 \end{figure}
 
+La tabla obtenida para un mínimo de 0 se muestra a continuación:
 % Please add the following required packages to your document preamble:
 % \usepackage{graphicx}
 \begin{table}[h]
@@ -86,7 +92,7 @@ Coordenadas obtenidas: ( 0.04473629039778207 ,  0.023958714099141746 )\\
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|c|c|c|}
 \hline
-Punto de inicio & Valor de F(x,y) para $\eta= 0,1$ & Valor de F(x,y) para $\eta = 0,01$ \\ \hline
+Punto de inicio & Valor de F(x,y) para $\eta= 0.1$ & Valor de F(x,y) para $\eta = 0.01$ \\ \hline
 (2.1, -2.1) & -0.6609830056250515  & -0.6609830056250515 \\ \cline{1-1}
 (3.0, -3.0) & -0.18464715440123114 & -0.2899238383832796 \\ \cline{1-1}
 (1.5, 1.5)  & -0.09421883629067579 & 18.042072349312036  \\ \cline{1-1}
@@ -94,16 +100,181 @@ Punto de inicio & Valor de F(x,y) para $\eta= 0,1$ & Valor de F(x,y) para $\eta 
 \end{tabular}%
 }
 \end{table}
-
+\\
+Para el punto de inicio (2.1, -2.1) podemos ver que el gradiente converge en el mismo mínimo local tanto para $\eta = 0.1$ como $\eta = 0.01$.
+\\
+\\
+Para el punto de inicio (3.0, -3.0) vemos que el gradiente para $\eta = 0.1$ evita el mínimo local en el que se estanca el gradiente para $\eta = 0.01$ y converge en un mejor mínimo.
+\\
+\\
+Para el punto de inicio (1.5, 1.5) vemos que el gradiente para $ \eta = 0.01 $ converge en un mínimo local con un valor de F(x,y) altísimo, mientras que el gradiente para $ \eta = 0.1 $ esquiva este mínimo y continua descendiendo hasta alcanzar un mínimo, de hecho, el valor mínimo de la tabla.
+\\
+\\
+Para el punto de inicio (1.0, 1.0) vemos que se obtiene los mismos valores que se obtienen partiendo de (3.0, -3.0).
+\newpage
 \section{Conclusión}
+Encontrar el mínimo global de una función arbitraria no es una tarea sencilla.\\
+En primer lugar debemos conocer el dominio y la imagen de la función determinada para saber que valores puede tomar esta y escoger así un buen mínimo para la función gradiente, de lo contrario, la función podría iterar sin sentido y devolver un valor arbitrario que no se trate de un mínimo global, si no simplemente del último valor calculado por el gradiente. Ademas es también esencial escoger un buen punto de inicio, o si se desconoce, probar con varios inicios aleatorios, para aumentar así las posibilidades de obtener un mínimo global de la función.\\
+Por ultimo también es esencial escoger una buena tasa de aprendizaje $ \eta $ puesto que este valor es esencial. Una tasa de aprendizaje muy alta, puede hacer que el gradiente pase por alto puntos que podrían ser mínimos globales y una tasa muy baja, puede hacer que el gradiente solo se mueva por una sección muy concreta del espacio de puntos y por tanto, nunca converja en el mínimo global que buscamos.
 
 \chapter{Ejercicio sobre Regresión Lineal}
 
-\section{Gradiente Descendente Estocastico vs Pseudoinversa}
+\section{Gradiente Descendente Estocástico vs Pseudoinversa}
+\subsection{Gradiente Descendente}
+Funcion que calcula el error:
+\begin{minted}
+[fontsize=\footnotesize, linenos]
+{python}
+# Función para calcular el error
+# Parámetros:
+#   x   -> Vector de datos X con n características
+#   y   -> Vector de etiquetas Y asociado a X
+#   w   -> Pesos del ajuste de la funcion
+#   Devuelve la media de (X*Wt - Y)**2
+def Err(x,y,w):
+   return np.mean((np.dot(x,w.T) - y)**2)
+\end{minted}
+
+Implementación del algoritmo de gradiente descendente estocástico:
+\begin{minted}
+[fontsize=\footnotesize, linenos]
+{python}
+# Gradiente Descendente Estocástico
+# Parámetros:
+#   x   -> Vector de datos X con n características
+#   y   -> Vector de etiquetas Y asociado a X
+#   n   -> Tasa de aprendizaje
+#   iterations  -> Numero máximo de iteraciones
+#   Devuelve w -> los pesos del ajuste de la función
+def sgd(x,y,n,iterations):
+   w = np.zeros(x[0].size) # Inicializamos w al vector de tantos 0's como
+                           # características tiene x
+   c = 0
+   # Mientras no se supere el numero máximo de iteraciones
+   while c < iterations:
+      # Obtenemos la submuestra de X
+      batch = np.random.choice(np.size(x,0), 128, replace=False)
+      # Copiamos en w_ant el valor anterior de w
+      w_ant = np.copy(w)
+      c = c + 1
+      # Para cada wj
+      for i in range(np.size(w)):
+         sumatoria = 0
+         # Calculamos la sumatoria de cada x que pertenece a la submuestra
+         for j in batch:
+            sumatoria = sumatoria + x[j][i]*(np.dot(x[j],w.T) - y[j])
+         # Actualizamos el valor de wj
+         w[i] = w_ant[i] -n * (2.0/np.float(np.size(batch))) * sumatoria
+   # Devolvemos w
+   return w
+\end{minted}
+\newpage
+
+\subsection{Pseudoinversa}
+Implementación de la pseudoinversa de una función:
+\begin{minted}
+[fontsize=\footnotesize, linenos]
+{python}
+# Pseudoinversa
+# Parámetros:
+#   x   -> Vector de datos X con n características
+#   y   -> Vector de etiquetas Y asociado a X
+#   Devuelve w -> los pesos del ajuste de la función
+def pseudoinverse(x,y):
+   # X*Xt
+   a = np.dot(x.T,x)
+   # (X*Xt)**-1
+   b = np.linalg.inv(a)
+   # (X*Xt)**-1 * Xt
+   pseudo = np.dot(b,x.T)
+   # (X*Xt)**-1 * Xt * Y
+   w = np.dot(pseudo,y)
+   # Devolvemos w
+   return w
+\end{minted}
+
+\subsection{Ajuste}
+Aquí podemos ver el ajuste de la función $ y = w_{2}x_{2} + w_{1}x_{1} + w_{0} $ aplicando el método del gradiente descendente estocástico y la pseudoinversa:
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=0.75\textwidth]{Figure_4.png}
+   \caption{Ajuste de la función por usando el descenso de gradiente estocástico y la pseudoinversa}
+\end{figure}
+\\
+Resultados obtenidos para el gradiente estocástico descendente:\\
+\\
+Pesos: ( -1.217646036994577 ,  -0.5106489094834245 ,  -0.44130505827385264 )\\
+Bondad del resultado para grad. descendente estocástico:\\
+Tasa de aprendizaje:  0.1\\
+Numero de iteraciones:  1000\\
+Ein:  0.0898614438948836\\
+Eout:  0.1342184869559824\\
+\\
+Resultados obtenidos para la pseudoinversa:\\
+\\
+Pesos: ( -1.1158801643097032 ,  -1.2485954585155632 ,  -0.49753165004088395 )\\
+Bondad del resultado para pseudoinversa:\\
+Ein:  0.07918658628900395\\
+Eout:  0.13095383720052597\\
+\\
+Podemos ver que efectivamente, el ajuste que realiza la pseudoinversa es un mejor ajuste que el realizado por el gradiente descendente estocástico, porque el error de entrada que se obtiene es menor para el primer método.\\
+Sin embargo, el error de salida para ambos métodos, son bastante similares, por lo que podemos esperar que para nuevos datos de este tipo, los datos sean etiquetados correctamente.
+
 
 \section{Experimento}
+El experimento consiste en generar un mapa de 1000 puntos uniformente maestreados.\\
+Y aplicarle a estos puntos la función $ f(x_{1},x_{2}) = sign((x_{1}-0.2)^{2} + x_{2}^{2} - 0.6) $ generando un 10\% de ruido.
+
+\begin{figure}[h]
+   \centering
+   \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=1.2\textwidth]{Figure_5.png}
+      \caption{Mapa de puntos generado}
+   \end{subfigure}
+   \hfill
+   \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=1.2\textwidth]{Figure_6.png}
+      \caption{Etiquetas asociadas al mapa de puntos + ruido}
+   \end{subfigure}
+\end{figure}
+
+
 \subsection{Modelo lineal}
+Primero intentaremos aplicar un modelo de regresión lineal utilizando el método de descenso de gradiente estocástico.\\
+La función que intentaremos modelar es $ y = w_{2}x_{2} + w_{1}x_{1} + w_{0} $.\\
+\\
+El ajuste que obtiene el gradiente descendente estocástico para esta función es el siguiente:\\
+Pesos: ( 0.054228727610857626 ,  -0.4397417676048226 ,  0.05657827745507337 )\\
+Ein:  0.9286039509550058\\
+\\
+Podemos ver en el Ein, el ajuste que realiza es desastroso, siendo el valor de este muy cercano a 1.\\
+\\
+En la figura 2.3 podemos ver que el ajuste lineal hace lo que puede para separar los datos.
 
 \subsection{Modelo no lineal}
+Repetiremos la estrategia para aplicar un modelo de regresión, pero esta vez no utilizaremos características lineales, si no que la función que queremos ajustar es $ y = w_{5}x_{2}^{2} + w_{4}x_{1}^{2} + w_{3}x_{1}x_{2} + w_{2}x_{2} + w_{1}x_{1} + w_{0} $.\\
+\\
+En este caso los resultados aportados por el gradiente descendente estocástico es:\\
+Pesos: ( -0.8853140173393634 ,  -0.4393879691210569 ,  \\
+0.02124617840448055 ,  -0.0035627946381743374 ,  1.2303357373519617 ,  1.5068528681590554 )\\
+Ein (medio):  0.5931666111495066\\
+\\
+Vemos que el Ein para este ajuste es bastante mejor para el ajuste lineal, aunque aun así sigue siendo un ajuste no muy fiable para los datos.\\
+\\
+Sin embargo en la figura 2.4 vemos que el ajuste visualmente no tiene tan mala pinta como el ajuste lineal.
 
+\begin{figure}[h]
+   \centering
+   \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=1.2\textwidth]{Figure_7.png}
+      \caption{Ajuste lineal}
+   \end{subfigure}
+   \hfill
+   \begin{subfigure}[b]{0.45\textwidth}
+      \includegraphics[width=1.2\textwidth]{Figure_8.png}
+      \caption{Ajuste no lineal}
+   \end{subfigure}
+\end{figure}
 \subsection{Conclusión}
+Como conclusión final podemos ver que es una locura intentar aplicar un modelo de regresión lineal al conjunto de datos del experimento. En las 1000 iteraciones de este experimento, vemos que los valores para un modelo lineal no suelen ser inferiores a 0.9, lo que es altísimo ---tanto para el error de entradas como para el de salida---. También vemos en las gráficas de puntos, que los datos no siguen una distribución lineal, así que de base, no es buena idea aplicar un modelo lineal.\\
+En cuanto al modelo no lineal, realiza un ajuste bastante bueno a primera vista, pero mirando el error que genera, vemos que no es tan bueno, ya que 0.6, aunque mas bajo que 0.9 sigue sin acercase a otros ajustes como el obtenido para los datos del apartado 1, que obtiene un error de 0.08.
