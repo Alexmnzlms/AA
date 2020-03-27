@@ -55,7 +55,7 @@ def dFx(x,y):
 
 # Derivada parcial de F con respecto a y
 def dFy(x,y):
-    return np.float( 4*y + 4*np.pi*np.sin(2*np.pi*x)*np.cos(2*np.pi*y) - 8 )
+    return np.float( 4*y + 4*np.pi*np.sin(2*np.pi*x)*np.cos(2*np.pi*y) + 8 )
 
 # Gradiente de F
 def gradF(x,y):
@@ -70,19 +70,20 @@ def gradF(x,y):
 #   iterations  -> Numero máximo de iteraciones
 #   min -> Valor minimo a alcanzar
 #   Devuelve las cordenadas w y el numero de iteraciones
-def gradient_descent(f,g,w,n,iterations,min):
-    print('Funcion gradiente para: ', f)
+def gradient_descent(f,g,ini,n,iterations,min):
     i = 0
+    # Inicializamos w a un vector vacio de 0's
+    w = np.array([0,0],np.float64)
     # Guardamos los valores iniciales de u y v
-    u = w[0]
-    v = w[1]
+    u = ini[0]
+    v = ini[1]
     # Mientras no superemos las iteraciones maximas y no obtengamos un valor menos
     # al minimo:
     while f(u,v) > min and i < iterations:
         grad = g(u,v) # Guardamos en grad el gradiente de la funcion
         # Actualizamos los valores de u y v
-        u = u - 0.1*grad[0]
-        v = v - 0.1*grad[1]
+        u = u - n*grad[0]
+        v = v - n*grad[1]
         i = i + 1
 
     # Cuando el bucle termina guardamos en w, los ultimos valores de u y v
@@ -102,14 +103,15 @@ initial_point = np.array([1.0,1.0]) # Punto de inicio
 w, it = gradient_descent(E,gradE,initial_point,eta,maxIter,error2get)  # Funcion gradiente
 
 # Imprimimos los resultados
+print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
 print ('Tasa de aprendizaje: ', eta)
 print ('Numero de iteraciones: ', it)
 print ('Coordenadas obtenidas: (', w[0], ', ', w[1],')')
 
 #################################################################################
 # Mostramos el grafico
-x = np.linspace(-30, 30, 50)
-y = np.linspace(-30, 30, 50)
+x = np.linspace(-1, 1, 50)
+y = np.linspace(-1, 1, 50)
 X, Y = np.meshgrid(x, y)
 
 Z = E_nf(X,Y)
@@ -135,46 +137,75 @@ print('Ejercicio 3.1\n')
 
 # Aplicamos el gradiente a la funcion F con tasa de aprendizaje 0.01
 eta = 0.01  # Tasa de aprendizaje
-maxIter = 1000  # Iteraciones maximas
-error2get = 1e-14   # Error minimo
-initial_point = np.array([1.0,1.0]) # Punto de inicio
-w1, it = gradient_descent(F,gradF,initial_point,eta,maxIter,error2get)  # Funcion gradiente
-
-# Imprimimos los resultados
+maxIter = 50  # Iteraciones maximas
+error2get = 0  # Error minimo
+initial_point = np.array([1.0,-1.0]) # Punto de inicio
+print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
 print ('Tasa de aprendizaje: ', eta)
-print ('Numero de iteraciones: ', it)
+
+# Guardamos los valores obtenidos en las iteraciones en dos listas
+valores1_x = list()
+valores1_y = list()
+for i in range(maxIter+1):
+    w1, it = gradient_descent(F,gradF,initial_point,eta,i,error2get)  # Funcion gradiente
+    valores1_x.append(w1[0])
+    valores1_y.append(w1[1])
+valores1_x = np.array(valores1_x)
+valores1_y = np.array(valores1_y)
 print ('Coordenadas obtenidas: (', w1[0], ', ', w1[1],')')
 
 # Aplicamos el gradiente a la funcion F con tasa de aprendizaje 0.01
 eta = 0.1  #Tasa de aprendizaje
-maxIter = 1000  # Iteraciones maximas
-error2get = 1e-14   # Error minimo
-initial_point = np.array([1.0,1.0]) # Punto de inicio
-w2, it = gradient_descent(F,gradF,initial_point,eta,maxIter,error2get)  # Funcion gradiente
-
-# Imprimimos los resultados
+print ('Punto de inicio: (', initial_point[0], ', ', initial_point[1],')')
 print ('Tasa de aprendizaje: ', eta)
-print ('Numero de iteraciones: ', it)
-print ('Coordenadas obtenidas: (', w2[0], ', ', w2[1],')')
+
+# Guardamos los valores obtenidos en las iteraciones en dos listas
+valores2_x = list()
+valores2_y = list()
+for i in range(maxIter+1):
+    w2, it = gradient_descent(F,gradF,initial_point,eta,i,error2get)  # Funcion gradiente
+    valores2_x.append(w2[0])
+    valores2_y.append(w2[1])
+valores2_x = np.array(valores2_x)
+valores2_y = np.array(valores2_y)
+print ('Coordenadas obtenidas: (', w1[0], ', ', w1[1],')')
+
+# Añadimos a una lista los indices que hemos recorrido
+a = list()
+for i in range(maxIter+1):
+    a.append(i)
+a = np.array(a)
 
 #################################################################################
+# Mostramos el grafico de como descienden los gradientes con 0,1 y 0,01 de tasa de aprendizaje
+plt.plot(a, F_nf(valores1_x,valores1_y), c = 'green',marker='o')
+plt.plot(a, F_nf(valores2_x,valores2_y), c = 'red',marker='*')
+plt.title('Ejercicio 3.1. Descanso del valor de la funcion por cada iteracion')
+plt.xticks()
+plt.yticks()
+plt.xlabel('Iteraciones')
+plt.ylabel('F(x,y)')
+legend_elements = [mlines.Line2D([], [], color='green',marker='o',markersize=10, label='SGD'),
+				   mlines.Line2D([], [], color='red' ,marker='*',markersize=10, label='Pseudoinversa')]
+plt.legend(handles=legend_elements)
+
+plt.show()
+
+#################################################################################
+input("\n--- Pulsar tecla para continuar ---\n")
 # Mostramos el grafico
-from mpl_toolkits.mplot3d import Axes3D
-x = np.linspace(-30, 30, 50)
-y = np.linspace(-30, 30, 50)
+# La idea era que la recta se viera por encima de la superfice, pero no he conseguido hacerlo
+x = np.linspace(1, 3, 50)
+y = np.linspace(-3, 0, 50)
 X, Y = np.meshgrid(x, y)
 
 Z = F_nf(X,Y)
 
 fig = plt.figure()
 ax = Axes3D(fig)
-surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1, cstride=1, cmap='jet')
-min_point1 = np.array([w1[0],w1[1]])
-min_point1_ = min_point1[:, np.newaxis]
-ax.plot(min_point1_[0], min_point1_[1], F(min_point1_[0], min_point1_[1]), 'go', markersize=10)
-min_point2 = np.array([w2[0],w2[1]])
-min_point2_ = min_point2[:, np.newaxis]
-ax.plot(min_point2_[0], min_point2_[1], F(min_point2_[0], min_point2_[1]), 'r*', markersize=10)
+ax.plot(valores1_x, valores1_y, F_nf(valores1_x, valores1_y), color = 'green', marker='o', markersize=10)
+ax.plot(valores2_x, valores2_y, F_nf(valores2_x, valores2_y), color = 'red', marker='*', markersize=10)
+surf = ax.plot_surface(X, Y, Z, edgecolor='none', rstride=1, cstride=1, cmap='jet',alpha=0.3)
 ax.set(title='Ejercicio 3.1. Función sobre la que se calcula el descenso de gradiente')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
@@ -201,7 +232,6 @@ initial_point.append([1.0,-1.0])
 
 # Convertimos esta lista en dos array np
 initial_point = np.array(initial_point)
-initial_point1 = np.copy(initial_point)
 
 # Bucle para obtener los gradientes con una tasa de aprendizaje = 0.1
 for i in range(4):
@@ -218,7 +248,7 @@ eta = 0.01  # Actualizamos la tasa de aprendizaje
 
 # Bucle para obtener los gradientes con una tasa de aprendizaje = 0.01
 for i in range(4):
-    ini = initial_point1[i]
+    ini = initial_point[i]
     print ('------------------------------------------------')
     print ('Punto de inicio: (', ini[0], ', ', ini[1],')')
     w, it = gradient_descent(F,gradF,ini,eta,maxIter,error2get)
