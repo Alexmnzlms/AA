@@ -41,7 +41,7 @@ def readData(file_x, file_y):
 	return x, y
 
 # Funcion para calcular el error
-#Parametros:
+# Parametros:
 #   x   -> Vector de datos X con n caracteristicas
 #   y   -> Vector de etiquetas Y asociado a X
 #   w   -> Pesos del ajuste de la funcion
@@ -50,14 +50,14 @@ def Err(x,y,w):
 	return np.mean((np.dot(x,w.T) - y)**2)
 
 # Gradiente Descendente Estocastico
-#Parametros:
+# Parametros:
 #   x   -> Vector de datos X con n caracteristicas
 #   y   -> Vector de etiquetas Y asociado a X
 #   n   -> Tasa de aprendizaje
 #   iterations  -> Numero máximo de iteraciones
 #   Devuelve w -> los pesos del ajuste de la funcion
 def sgd(x,y,n,iterations):
-	w = np.zeros(x[0].size) # Inicializamos w an vector de tantos 0's como
+	w = np.zeros(x[0].size) # Inicializamos w al vector de tantos 0's como
 							# caracteristicas tiene x
 	c = 0
 	# Mientras no se supere el numero maximo de iteraciones
@@ -79,7 +79,7 @@ def sgd(x,y,n,iterations):
 	return w
 
 # Pseudoinversa
-#Parametros:
+# Parametros:
 #   x   -> Vector de datos X con n caracteristicas
 #   y   -> Vector de etiquetas Y asociado a X
 #   Devuelve w -> los pesos del ajuste de la funcion
@@ -295,7 +295,7 @@ x = np.array(x)
 # y = w5x2**2 + w4x1**2 + w3x1x2 + w2x2 + w1x1 + w0
 w = sgd(x,f,0.1,1000)
 # Imprimimos los pesos obtenidos y el error de entrada
-print ('Coordenadas obtenidas: (', w[0], ', ', w[1], ', ', w[2], ', ', w[3], ', ', w[4], ', ', w[5],')')
+print ('Pesos: (', w[0], ', ', w[1], ', ', w[2], ', ', w[3], ', ', w[4], ', ', w[5],')')
 print ("Ein (medio): ", Err(x,f,w))
 
 #Obtenemos los valores de x1
@@ -318,7 +318,7 @@ plt.ylabel('x2')
 legend_elements = [mlines.Line2D([], [], color='black',markersize=15, label='SGD'),
 				   mlines.Line2D([],[],linewidth=0,marker='o', color='blue', label='1', markersize=10),
 				   mlines.Line2D([],[],linewidth=0,marker='o', color='red', label='-1', markersize=10)]
-plt.legend(handles=legend_elements)
+plt.legend(handles=legend_elements, loc='lower left')
 plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
