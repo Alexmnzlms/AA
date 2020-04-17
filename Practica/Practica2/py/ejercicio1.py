@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 TRABAJO 2
-Nombre Estudiante:
+Nombre Estudiante: Alejandro Manzanares Lemus
 """
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
+import math
+
 
 
 # Fijamos la semilla
@@ -43,9 +47,25 @@ def simula_recta(intervalo):
 
 x = simula_unif(50, 2, [-50,50])
 #CODIGO DEL ESTUDIANTE
+plt.clf()
+plt.scatter(x[:, 0], x[:, 1])
+plt.title('Ejercicio 1.1. Nube de puntos generada con simula_unif')
+plt.xticks()
+plt.yticks()
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
 
 x = simula_gaus(50, 2, np.array([5,7]))
 #CODIGO DEL ESTUDIANTE
+plt.clf()
+plt.scatter(x[:, 0], x[:, 1])
+plt.title('Ejercicio 1.1. Nube de puntos generada con simula_gauss')
+plt.xticks()
+plt.yticks()
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
@@ -68,6 +88,42 @@ def f(x, y, a, b):
 
 #CODIGO DEL ESTUDIANTE
 
+x = simula_unif(100, 2, [-50,50])
+
+a,b = simula_recta([-50,50])
+
+f_values = list()
+for i in range(100):
+	f_values.append(f(x[i][0],x[i][1],a,b))
+
+f_values = np.array(f_values)
+
+
+colist=[]
+for i in f_values:
+	if i == 1:
+	    colist.append('red')
+	else:
+		colist.append('blue')
+
+y = x[:,0]*a + b
+
+#################################################################################
+# Mostramos el grafico
+plt.plot(x[:, 0], y, c = 'black')
+plt.scatter(x[:, 0], x[:, 1], c=colist)
+plt.title('Ejercicio 2.1. Nube de puntos generada')
+plt.xticks()
+plt.yticks()
+plt.xlabel('x')
+plt.ylabel('y')
+legend_elements = [mlines.Line2D([], [], color='black',markersize=15, label='Recta generada por simula_recta'),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='blue', label='-1', markersize=10),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='red', label='1', markersize=10)]
+plt.legend(handles=legend_elements)
+
+plt.show()
+
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
@@ -75,6 +131,67 @@ input("\n--- Pulsar tecla para continuar ---\n")
 # Array con 10% de indices aleatorios para introducir ruido
 
 #CODIGO DEL ESTUDIANTE
+
+positive = list()
+negative = list()
+
+for i in f_values:
+	if(i == -1):
+		negative.append(i)
+	else:
+		positive.append(i)
+
+print(positive)
+print(negative)
+
+print(len(positive))
+print(math.ceil(0.1*len(positive)))
+
+print(len(negative))
+print(math.ceil(0.1*len(negative)))
+
+index = np.random.choice(len(positive),np.int(0.1*len(positive)), replace=False)
+for i in index:
+	positive[i] = -1*positive[i]
+
+index = np.random.choice(len(negative), np.int(0.1*len(negative)), replace=False)
+for i in index:
+	negative[i] = -1*negative[i]
+
+print(positive)
+print(negative)
+
+f_values = list()
+for i in positive:
+	f_values.append(i)
+
+for i in negative:
+	f_values.append(i)
+
+f_values = np.array(f_values)
+
+colist=[]
+for i in f_values:
+	if i == 1:
+	    colist.append('red')
+	else:
+		colist.append('blue')
+
+#################################################################################
+# Mostramos el grafico
+plt.plot(x[:, 0], y, c = 'black')
+plt.scatter(x[:, 0], x[:, 1], c=colist)
+plt.title('Ejercicio 2.1. Nube de puntos generada con ruido')
+plt.xticks()
+plt.yticks()
+plt.xlabel('x')
+plt.ylabel('y')
+legend_elements = [mlines.Line2D([], [], color='black',markersize=15, label='Recta generada por simula_recta'),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='blue', label='-1', markersize=10),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='red', label='1', markersize=10)]
+plt.legend(handles=legend_elements)
+
+plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
@@ -89,7 +206,7 @@ def plot_datos_cuad(X, y, fz, title='Point cloud plot', xaxis='x axis', yaxis='y
     min_xy = X.min(axis=0)
     max_xy = X.max(axis=0)
     border_xy = (max_xy-min_xy)*0.01
-    
+
     #Generar grid de predicciones
     xx, yy = np.mgrid[min_xy[0]-border_xy[0]:max_xy[0]+border_xy[0]+0.001:border_xy[0],
                       min_xy[1]-border_xy[1]:max_xy[1]+border_xy[1]+0.001:border_xy[1]]
@@ -120,5 +237,25 @@ def plot_datos_cuad(X, y, fz, title='Point cloud plot', xaxis='x axis', yaxis='y
 
 
 #CODIGO DEL ESTUDIANTE
+
+def f1(x):
+	return (x[:,0]-10)**2 + (x[:,1]-2)**2 - 400
+
+def f2(x):
+	return 0.5*(x[:,0]+10)**2 + (x[:,1]-2)**2 - 400
+
+def f3(x):
+	return (x[:,0]-10)**2 - (x[:,1]+2)**2 - 400
+
+def f4(x):
+	return x[:,1] - 20*(x[:,0]**2) - 5*x[:,0] + 3
+
+plot_datos_cuad(x,f_values,f1)
+
+plot_datos_cuad(x,f_values,f2)
+
+plot_datos_cuad(x,f_values,f3)
+
+plot_datos_cuad(x,f_values,f4)
 
 input("\n--- Pulsar tecla para continuar ---\n")
