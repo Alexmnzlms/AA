@@ -112,7 +112,7 @@ y = x[:,0]*a + b
 # Mostramos el grafico
 plt.plot(x[:, 0], y, c = 'black')
 plt.scatter(x[:, 0], x[:, 1], c=colist)
-plt.title('Ejercicio 2.1. Nube de puntos generada')
+plt.title('Ejercicio 1.2. Nube de puntos generada')
 plt.xticks()
 plt.yticks()
 plt.xlabel('x')
@@ -181,7 +181,7 @@ for i in f_values:
 # Mostramos el grafico
 plt.plot(x[:, 0], y, c = 'black')
 plt.scatter(x[:, 0], x[:, 1], c=colist)
-plt.title('Ejercicio 2.1. Nube de puntos generada con ruido')
+plt.title('Ejercicio 1.3. Nube de puntos generada con ruido')
 plt.xticks()
 plt.yticks()
 plt.xlabel('x')
