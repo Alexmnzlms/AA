@@ -9,7 +9,7 @@ import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 import math
 
-np.random.seed(2)
+np.random.seed(1996)
 
 # EJERCICIO 2.1: ALGORITMO PERCEPTRON
 
@@ -231,69 +231,147 @@ input("\n--- Pulsar tecla para continuar ---\n")
 
 # EJERCICIO 3: REGRESIÓN LOGÍSTICA CON STOCHASTIC GRADIENT DESCENT
 
-# Gradiente Descendente Estocastico
-# Parametros:
-#   x   -> Vector de datos X con n caracteristicas
-#   y   -> Vector de etiquetas Y asociado a X
-#   n   -> Tasa de aprendizaje
-#   iterations  -> Numero máximo de iteraciones
-#   Devuelve w -> los pesos del ajuste de la funcion
-def sgd(x,y,n,iterations):
-	w = np.zeros(x[0].size) # Inicializamos w al vector de tantos 0's como
-							# caracteristicas tiene x
-	c = 0
-	# Mientras no se supere el numero maximo de iteraciones
-	while c < iterations:
-		# Obtenemos la submuestra de X
+def E(x,y,w):
+
+	return (-(y*x) / (1 + np.exp(y*np.dot(w.T,x))))
+
+def sgdRL(x,y,n):
+	#CODIGO DEL ESTUDIANTE
+	w = np.zeros(x[0].size)
+	w_ant = np.copy(w)
+
+	batch = np.random.choice(np.size(x,0), np.size(x,0), replace=False)
+
+
+	for j in batch:
+		w = w - n * E(x[j],y[j],w)
+
+	while np.linalg.norm(w_ant - w) >= 0.01:
+		print(np.linalg.norm(w_ant - w))
+		w_ant = np.copy(w)
 		batch = np.random.choice(np.size(x,0), np.size(x,0), replace=False)
-		while len(batch) != 0:
-			minibatch_tam = 32
-			print(batch)
-			minibatch = []
-			index = []
-			for i in range(minibatch_tam):
-				if(i == len(batch)):
-					break
-				minibatch.append(batch[i])
-				index.append(i)
 
 
-			minibatch = np.array(minibatch)
-			batch = np.delete(batch,index)
+		for j in batch:
+			w = w - n * E(x[j],y[j],w)
 
-			print(minibatch)
-			print(batch)
-			print('---------')
-			# Copiamos en w_ant el valor anterior de w
-			w_ant = np.copy(w)
-			c = c + 1
-			# Para cada wj
-			for i in range(np.size(w)):
-				sumatoria = 0.0
-				# Calculamos la sumatoria de cada x que pertenece a la submuestra
-				for j in minibatch:
-					sumatoria = sumatoria + x[j][i]*(np.dot(x[j],w.T) - y[j])
-					# print('Xji',x[j][i])
-					# print('Xj',x[j])
-					# print('Wt',w.T)
-					# print('Yj',y[j])
-					# print(sumatoria)
-				# Actualizamos el valor de wj
-				w[i] = w_ant[i] -n * (2.0/np.float(np.size(minibatch))) * sumatoria
-
-		print(c)
-		print(w)
-	# Devolvemos w
 	return w
 
+def genera_recta(x):
 
-# def sgdRL(?):
-#     #CODIGO DEL ESTUDIANTE
-#
-#     return w
+	points = np.random.choice(np.size(x,0), 2, replace=False)
+	print(points)
+	print(x[points[0]])
+	print(x[points[1]])
+	x1 = x[points[0]][0]
+	x2 = x[points[1]][0]
+	y1 = x[points[0]][1]
+	y2 = x[points[1]][1]
+	# y = a*x + b
+	a = (y2-y1)/(x2-x1) # Calculo de la pendiente.
+	b = y1 - a*x1       # Calculo del termino independiente.
 
-w = sgd(D,f_values,0.01,100)
+	return a, b
+
+x = simula_unif(100, 2, [0,2])
+a,b = genera_recta(x)
+f_values = list()
+for i in range(100):
+	f_values.append(f(x[i][0],x[i][1],a,b))
+
+f_values = np.array(f_values)
+
+print(x)
+
+print(f_values)
+
+D = list()
+for i in x:
+	D.append([1.0,i[0],i[1]])
+D = np.array(D)
+
+
+w = sgdRL(D,f_values,0.01)
 print(w)
+
+Y = list()
+for i in x[: ,0]:
+    Y.append( (-w[0] - w[1]*i) / w[2] )
+
+colist=[]
+for i in f_values:
+	if i == 1:
+	    colist.append('red')
+	else:
+		colist.append('blue')
+
+y = x[:,0]*a + b
+plt.plot(x[:, 0], y, c = 'grey')
+plt.plot(x[:, 0], Y, c = 'black')
+plt.scatter(x[:, 0], x[:, 1], c=colist)
+plt.title('Ejercicio 2.1. Nube de puntos generada')
+plt.xticks()
+plt.yticks()
+plt.xlabel('x')
+plt.ylabel('y')
+plt.ylim([0,2])
+legend_elements = [mlines.Line2D([], [], color='black',markersize=15, label='Recta '),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='blue', label='-1', markersize=10),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='red', label='1', markersize=10)]
+plt.legend(handles=legend_elements)
+
+plt.show()
+
+def error(x,y,w):
+	return np.log(1 + np.exp(-1*y*np.dot(w.T,x)))
+
+x = simula_unif(1000, 2, [0,2])
+f_values = list()
+for i in range(1000):
+	f_values.append(f(x[i][0],x[i][1],a,b))
+
+f_values = np.array(f_values)
+
+D = list()
+for i in x:
+	D.append([1.0,i[0],i[1]])
+D = np.array(D)
+
+err = []
+for i in range(1000):
+	err.append(error(D[i],f_values[i],w))
+
+err = np.mean(err)
+print(error(err)
+
+Y = list()
+for i in x[: ,0]:
+    Y.append( (-w[0] - w[1]*i) / w[2] )
+
+colist=[]
+for i in f_values:
+	if i == 1:
+	    colist.append('red')
+	else:
+		colist.append('blue')
+
+y = x[:,0]*a + b
+plt.plot(x[:, 0], y, c = 'grey')
+plt.plot(x[:, 0], Y, c = 'black')
+plt.scatter(x[:, 0], x[:, 1], c=colist)
+plt.title('Ejercicio 2.1. Nube de puntos generada')
+plt.xticks()
+plt.yticks()
+plt.xlabel('x')
+plt.ylabel('y')
+plt.ylim([0,2])
+legend_elements = [mlines.Line2D([], [], color='black',markersize=15, label='Recta '),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='blue', label='-1', markersize=10),
+                   mlines.Line2D([],[],linewidth=0,marker='o', color='red', label='1', markersize=10)]
+plt.legend(handles=legend_elements)
+
+plt.show()
+
 
 # #CODIGO DEL ESTUDIANTE
 #
