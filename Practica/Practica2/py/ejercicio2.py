@@ -322,12 +322,13 @@ plt.legend(handles=legend_elements)
 
 plt.show()
 
-def error(x,y,w):
+def ErrLR(x,y,w):
 	return np.log(1 + np.exp(-1*y*np.dot(w.T,x)))
 
-x = simula_unif(1000, 2, [0,2])
+num_data = 1000
+x = simula_unif(num_data, 2, [0,2])
 f_values = list()
-for i in range(1000):
+for i in range(num_data):
 	f_values.append(f(x[i][0],x[i][1],a,b))
 
 f_values = np.array(f_values)
@@ -338,11 +339,11 @@ for i in x:
 D = np.array(D)
 
 err = []
-for i in range(1000):
-	err.append(error(D[i],f_values[i],w))
+for i in range(num_data):
+	err.append(ErrLR(D[i],f_values[i],w))
 
 err = np.mean(err)
-print(error(err)
+print(err)
 
 Y = list()
 for i in x[: ,0]:
@@ -373,17 +374,13 @@ plt.legend(handles=legend_elements)
 plt.show()
 
 
-# #CODIGO DEL ESTUDIANTE
-#
-# input("\n--- Pulsar tecla para continuar ---\n")
-#
-#
-#
-# # Usar la muestra de datos etiquetada para encontrar nuestra solución g y estimar Eout
-# # usando para ello un número suficientemente grande de nuevas muestras (>999).
-#
-#
-# #CODIGO DEL ESTUDIANTE
-#
-#
-# input("\n--- Pulsar tecla para continuar ---\n")
+#CODIGO DEL ESTUDIANTE
+
+# Usar la muestra de datos etiquetada para encontrar nuestra solución g y estimar Eout
+# usando para ello un número suficientemente grande de nuevas muestras (>999).
+
+
+#CODIGO DEL ESTUDIANTE
+
+
+input("\n--- Pulsar tecla para continuar ---\n")

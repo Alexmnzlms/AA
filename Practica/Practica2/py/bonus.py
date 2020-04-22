@@ -1,5 +1,18 @@
 #BONUS: Clasificación de Dígitos
 
+"""
+BONUS
+Nombre Estudiante: Alejandro Manzanares Lemus
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
+import math
+
+np.random.seed(0)
+
 
 # Funcion para leer los datos
 def readData(file_x, file_y, digits, labels):
@@ -54,9 +67,30 @@ input("\n--- Pulsar tecla para continuar ---\n")
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
-
-
 #POCKET ALGORITHM
+
+def ajusta_PLA(datos, label, max_iter, vini):
+    #CODIGO DEL ESTUDIANTE
+    w = np.copy(vini)
+    mejora = True
+    iter = 0
+    while(mejora and iter < max_iter):
+        mejora = False
+        iter = iter + 1
+        for i in range(len(datos)):
+            if(signo(w.T.dot(datos[i])) != label[i]):
+                w = w + label[i]*datos[i]
+                mejora = True
+
+    return w, iter
+
+def error_PLA(0,)
+
+def pocket_PLA(datos, label, max_iter):
+
+	vini = np.zeros(np.size(datos,0))
+	w = ajusta_PLA(datos, label, max_iter, vini)
+
 
 #CODIGO DEL ESTUDIANTE
 
