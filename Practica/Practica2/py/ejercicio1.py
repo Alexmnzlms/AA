@@ -9,11 +9,8 @@ import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 import math
 
-
-
 # Fijamos la semilla
 np.random.seed(1)
-
 
 def simula_unif(N, dim, rango):
 	return np.random.uniform(rango[0],rango[1],(N,dim))
@@ -29,7 +26,6 @@ def simula_gaus(N, dim, sigma):
 
     return out
 
-
 def simula_recta(intervalo):
     points = np.random.uniform(intervalo[0], intervalo[1], size=(2, 2))
     x1 = points[0,0]
@@ -42,11 +38,9 @@ def simula_recta(intervalo):
 
     return a, b
 
-
 # EJERCICIO 1.1: Dibujar una gráfica con la nube de puntos de salida correspondiente
 
 x = simula_unif(50, 2, [-50,50])
-#CODIGO DEL ESTUDIANTE
 plt.clf()
 plt.scatter(x[:, 0], x[:, 1])
 plt.title('Ejercicio 1.1. Nube de puntos generada con simula_unif')
@@ -57,7 +51,6 @@ plt.ylabel('y')
 plt.show()
 
 x = simula_gaus(50, 2, np.array([5,7]))
-#CODIGO DEL ESTUDIANTE
 plt.clf()
 plt.scatter(x[:, 0], x[:, 1])
 plt.title('Ejercicio 1.1. Nube de puntos generada con simula_gauss')
@@ -86,7 +79,8 @@ def signo(x):
 def f(x, y, a, b):
 	return signo(y - a*x - b)
 
-#CODIGO DEL ESTUDIANTE
+# Fijamos la semilla
+np.random.seed(1996)
 
 x = simula_unif(100, 2, [-50,50])
 
@@ -107,16 +101,19 @@ for i in f_values:
 		colist.append('blue')
 
 y = x[:,0]*a + b
+print('Valor de a:', a)
+print('Valor de b:', b)
 
 #################################################################################
 # Mostramos el grafico
 plt.plot(x[:, 0], y, c = 'black')
 plt.scatter(x[:, 0], x[:, 1], c=colist)
-plt.title('Ejercicio 1.2. Nube de puntos generada')
+plt.title('Ejercicio 1.2. Clasificación de los puntos segun la recta proporcionada por simula_recta')
 plt.xticks()
 plt.yticks()
-plt.xlabel('x')
-plt.ylabel('y')
+plt.xlabel('x1')
+plt.ylabel('x2')
+plt.ylim([-50,50])
 legend_elements = [mlines.Line2D([], [], color='black',markersize=15, label='Recta generada por simula_recta'),
                    mlines.Line2D([],[],linewidth=0,marker='o', color='blue', label='-1', markersize=10),
                    mlines.Line2D([],[],linewidth=0,marker='o', color='red', label='1', markersize=10)]
@@ -141,15 +138,6 @@ for i in f_values:
 	else:
 		positive.append(i)
 
-print(positive)
-print(negative)
-
-print(len(positive))
-print(math.ceil(0.1*len(positive)))
-
-print(len(negative))
-print(math.ceil(0.1*len(negative)))
-
 index = np.random.choice(len(positive),np.int(0.1*len(positive)), replace=False)
 for i in index:
 	positive[i] = -1*positive[i]
@@ -157,9 +145,6 @@ for i in index:
 index = np.random.choice(len(negative), np.int(0.1*len(negative)), replace=False)
 for i in index:
 	negative[i] = -1*negative[i]
-
-print(positive)
-print(negative)
 
 f_values = list()
 for i in positive:
@@ -181,11 +166,12 @@ for i in f_values:
 # Mostramos el grafico
 plt.plot(x[:, 0], y, c = 'black')
 plt.scatter(x[:, 0], x[:, 1], c=colist)
-plt.title('Ejercicio 1.3. Nube de puntos generada con ruido')
+plt.title('Ejercicio 1.3. Adición de ruido a la clasificación por simula_recta')
 plt.xticks()
 plt.yticks()
 plt.xlabel('x')
 plt.ylabel('y')
+plt.ylim([-50,50])
 legend_elements = [mlines.Line2D([], [], color='black',markersize=15, label='Recta generada por simula_recta'),
                    mlines.Line2D([],[],linewidth=0,marker='o', color='blue', label='-1', markersize=10),
                    mlines.Line2D([],[],linewidth=0,marker='o', color='red', label='1', markersize=10)]
@@ -236,25 +222,153 @@ def plot_datos_cuad(X, y, fz, title='Point cloud plot', xaxis='x axis', yaxis='y
     plt.show()
 
 
-#CODIGO DEL ESTUDIANTE
-
+#################################################################################
 def f1(x):
 	return (x[:,0]-10)**2 + (x[:,1]-2)**2 - 400
 
+
+f_values = f1(x)
+
+for i in range(len(f_values)):
+	f_values[i] = signo(f_values[i])
+
+f_values = np.array(f_values)
+
+positive = []
+negative = []
+for i in f_values:
+	if(i == -1.0):
+		negative.append(i)
+	if (i == 1.0):
+		positive.append(i)
+
+index = np.random.choice(len(positive),np.int(0.1*len(positive)), replace=False)
+for i in index:
+	positive[i] = -1*positive[i]
+
+index = np.random.choice(len(negative), np.int(0.1*len(negative)), replace=False)
+for i in index:
+	negative[i] = -1*negative[i]
+
+f_values = list()
+for i in positive:
+	f_values.append(i)
+
+for i in negative:
+	f_values.append(i)
+
+f_values = np.array(f_values)
+
+plot_datos_cuad(x,f_values,f1)
+#################################################################################
 def f2(x):
 	return 0.5*(x[:,0]+10)**2 + (x[:,1]-2)**2 - 400
 
+f_values = f2(x)
+
+for i in range(len(f_values)):
+	f_values[i] = signo(f_values[i])
+
+f_values = np.array(f_values)
+
+positive = []
+negative = []
+for i in f_values:
+	if(i == -1.0):
+		negative.append(i)
+	if (i == 1.0):
+		positive.append(i)
+
+index = np.random.choice(len(positive),np.int(0.1*len(positive)), replace=False)
+for i in index:
+	positive[i] = -1*positive[i]
+
+index = np.random.choice(len(negative), np.int(0.1*len(negative)), replace=False)
+for i in index:
+	negative[i] = -1*negative[i]
+
+f_values = list()
+for i in positive:
+	f_values.append(i)
+
+for i in negative:
+	f_values.append(i)
+
+f_values = np.array(f_values)
+
+plot_datos_cuad(x,f_values,f2)
+#################################################################################
 def f3(x):
 	return (x[:,0]-10)**2 - (x[:,1]+2)**2 - 400
 
+f_values = f3(x)
+
+for i in range(len(f_values)):
+	f_values[i] = signo(f_values[i])
+
+f_values = np.array(f_values)
+
+positive = []
+negative = []
+for i in f_values:
+	if(i == -1.0):
+		negative.append(i)
+	if (i == 1.0):
+		positive.append(i)
+
+index = np.random.choice(len(positive),np.int(0.1*len(positive)), replace=False)
+for i in index:
+	positive[i] = -1*positive[i]
+
+index = np.random.choice(len(negative), np.int(0.1*len(negative)), replace=False)
+for i in index:
+	negative[i] = -1*negative[i]
+
+f_values = list()
+for i in positive:
+	f_values.append(i)
+
+for i in negative:
+	f_values.append(i)
+
+f_values = np.array(f_values)
+
+plot_datos_cuad(x,f_values,f3)
+#################################################################################
 def f4(x):
 	return x[:,1] - 20*(x[:,0]**2) - 5*x[:,0] + 3
 
-plot_datos_cuad(x,f_values,f1)
+f_values = f4(x)
 
-plot_datos_cuad(x,f_values,f2)
+for i in range(len(f_values)):
+	f_values[i] = signo(f_values[i])
 
-plot_datos_cuad(x,f_values,f3)
+f_values = np.array(f_values)
+
+positive = []
+negative = []
+for i in f_values:
+	if(i == -1.0):
+		negative.append(i)
+	if (i == 1.0):
+		positive.append(i)
+
+index = np.random.choice(len(positive),np.int(0.1*len(positive)), replace=False)
+for i in index:
+	positive[i] = -1*positive[i]
+
+index = np.random.choice(len(negative), np.int(0.1*len(negative)), replace=False)
+for i in index:
+	negative[i] = -1*negative[i]
+
+f_values = list()
+for i in positive:
+	f_values.append(i)
+
+for i in negative:
+	f_values.append(i)
+
+f_values = np.array(f_values)
 
 plot_datos_cuad(x,f_values,f4)
 

@@ -67,6 +67,10 @@ def signo(x):
 	return -1
 
 def Err(x,y,w):
+	# x: conjunto de datos
+	# y: conjunto de etiquetas
+	# w: valores de ŵ
+	# Contamos los puntos que estan mal clasificados
 	cont = 0
 	for i in range(len(x)):
 		if signo(np.dot(w.T,x[i])) != y[i]:
@@ -80,13 +84,11 @@ def sgd(x,y,n,iterations):
 							# caracteristicas tiene x
 	c = 0
 	epoca = 0
-	# Mientras no se supere el numero maximo de iteraciones
+	# Mientras no se supere el numero maximo de iteraciones y no hayamos terminado una epoca
 	termianda_epoca = True
 	batch = np.array([])
 	while c < iterations or not termianda_epoca:
-		print('SGD',c,w, Err(x,y,w))
 		# Obtenemos la submuestra de X
-
 		if len(batch) == 0:
 			termianda_epoca = False
 			batch = np.random.choice(np.size(x,0), np.size(x,0), replace=False)
@@ -99,11 +101,7 @@ def sgd(x,y,n,iterations):
 			minibatch.append(batch[i])
 			index.append(i)
 
-
-		# print(minibatch)
 		batch = np.delete(batch,index)
-		# print(len(batch))
-		# print(minibatch)
 
 		# Copiamos en w_ant el valor anterior de w
 		w_ant = np.copy(w)
@@ -121,16 +119,11 @@ def sgd(x,y,n,iterations):
 			termianda_epoca = True
 			epoca +=1
 	# Devolvemos w
-	print(epoca)
 	return w
 
-# w = np.zeros(3)
 w = sgd(x,y,0.01,10000)
 
-print(w)
 print('E(in)', Err(x,y,w))
-
-print(w)
 print('E(test)', Err(x_test,y_test	,w))
 
 Y = list()
@@ -163,44 +156,52 @@ input("\n--- Pulsar tecla para continuar ---\n")
 #POCKET ALGORITHM
 
 def ajusta_PLA(datos, label, max_iter, vini):
-    #CODIGO DEL ESTUDIANTE
+	# datos: conjunto de entrenamiento D
+	# label: conjunto de etiquetas asociado a D
+	# max_iter: numero máximo de iteraciones
+	# vini: valor inicial para w
+    # Establecemos vini como valor inicial de w
     w = np.copy(vini)
     mejora = True
     iter = 0
+	# Si ha habido mejora y las iteraciones no superan un maximo
     while(mejora and iter < max_iter):
         mejora = False
         iter = iter + 1
+		# Para cada xi del conjunto D
         for i in range(len(datos)):
-            if(signo(np.dot(w.T,datos[i])) != label[i]):
+            if(signo(w.T.dot(datos[i])) != label[i]):
+				# w_new = w_old + xi*yi
                 w = w + label[i]*datos[i]
                 mejora = True
 
+	# Devuelve el valor de w y las iteraciones utilizadas
     return w
 
 def pocket_PLA(datos, label, w):
-
+	# datos: conjunto de entrenamiento D
+	# label: conjunto de etiquetas asociado a D
+	# w: valor inicial del vector w
+	# Establecemos como Error minimo, el valor de Error(w)
 	err_min = Err(datos,label,w)
 	w_min = w
-	iter_min = 0
+	# Hacemos 100 ejecuciones del PLA con 1 iteración
 	for i in range(100):
-		print('PLA Pocket',i,w,Err(datos,label,w))
 		vini = np.copy(w)
 		w = ajusta_PLA(datos, label, 1, vini)
 		err_w = Err(datos,label,w)
+		# Nos quedamos con el w que produce un error minimo
 		if err_w < err_min:
 			w_min = w
 			err_min = err_w
-			iter_min = i
 
-	return w_min, iter_min
+	# Devuelve el w que produce el error minimo
+	return w_min
 
-w, iter = pocket_PLA(x,y,w)
+w = pocket_PLA(x,y,w)
 
-print(iter)
-print(w)
+
 print('E(in)', Err(x,y,w))
-
-print(w)
 print('E(test)', Err(x_test,y_test	,w))
 
 Y = list()
@@ -232,11 +233,9 @@ plt.show()
 
 input("\n--- Pulsar tecla para continuar ---\n")
 
-
 #COTA SOBRE EL ERROR
 
 print('Cota con E(in)', Err(x,y,w) + np.sqrt( (1/len(x)) * np.log(2/0.05) ) )
-
 print('Cota con E(test)', Err(x_test,y_test,w) + np.sqrt( (1/len(x)) * np.log(2/0.05) ) )
 
 #CODIGO DEL ESTUDIANTE
