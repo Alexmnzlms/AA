@@ -48,7 +48,7 @@ Ahora, simplemente seleccionamos un 10\% de los datos positivos y un 10\% de los
 
 \newpage
 \subsection{Prueba de diferentes funciones frontera}
-Aquí podemos ver el etiquetado del apartado anterior utilizando las siguientes funciones como frontera:
+Utilizaremos las siguientes funciones frontera:
 \begin{itemize}
    \item $ f (x, y) = (x − 10)^{2} + (y − 20)^{2} − 400 $
    \item $ f (x, y) = 0,5(x + 10)^{2} + (y − 20)^{2} − 400 $
@@ -110,7 +110,7 @@ def ajusta_PLA(datos, label, max_iter, vini):
    return w, iter
 \end{minted}
 
-El Perceptron Learning Algorithm (PLA) se basa en recorrer el conjunto de entrenamiento D, ajustando en cada iteración un solo elemento del conjunto, sin prestar atención a los demás.
+El Perceptron Learning Algorithm (PLA) se basa en recorrer el conjunto de entrenamiento D, ajustando ŵ en cada iteración en base a un solo elemento del conjunto, sin prestar atención a los demás.
 Sabemos que aun así, este algoritmo alcanza un óptimo en tiempo finito.  Además, para un conjunto de datos linealmente separable, PLA siempre es capaz de encontrar el vector de pesos ŵ, tal que $ h(x_{i}) = y_{i} $.
 
 \begin{figure}[h]
@@ -313,8 +313,8 @@ def pocket_PLA(datos, label, w):
    return w_min
 \end{minted}
 
-El algortimo pocket es una extensión del algoritmo PLA que se basa en "guardar en el bolsillo" el mejor valor obtenido para ŵ.
-De esta forma, se puede utilizar el ajuste que realiza el algortimo PLA a un conjunto que no sea totalmente clasificable.
+El algortimo pocket es una extensión del algoritmo PLA que se basa en ``guardar en el bolsillo'' el mejor valor obtenido para ŵ.
+De esta forma, se puede utilizar el ajuste que realiza el algortimo PLA a un conjunto que no sea totalmente separable por una recta.
 Pocket, ejecuta de manera reiterada el algortimo PLA y se queda siempre con el mejor ajuste que este proporciona.
 
 
@@ -363,22 +363,22 @@ Podemos establecer dos cotas para $ E_{out} $, utilizando el $ E_{in} $ y utiliz
    \item Cota obtenida con $ E_{test} $: $ \mathbf{E_{out} = 0.3151462363585908} $
 \end{itemize}
 
-La mejor cota es la obtenida utilizando el $ E_{in} $\\
+La mejor cota es la obtenida utilizando el $ E_{in} $.\\
 Para establecer la cota se ha utilizado: $ E_{out} \leq E_{in} + \sqrt{\frac{1}{2N}log(\frac{2}{\delta})}s $
 
 \chapter{Bibliografía}
 \begin{itemize}
 
-   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html}{Documentacion de numpy.array}
-   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html}{Documentacion de numpy.meshgrid}
-   \item \href{https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.random.choice.html}{Documentacion de numpy.random.choice}
-   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.inv.html}{Documentacion de numpy.linalg.inv}
-   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.dot.html}{Documentacion de numpy.dot}
-   \item \href{https://het.as.utexas.edu/HET/Software/Numpy/reference/generated/numpy.mean.html#numpy.mean}{Documentacion de numpy.mean}
-   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html#numpy.zeros}{Documentacion de numpy.zeros}
+   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html}{Docuemntación de numpy.array}
+   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.meshgrid.html}{Docuemntación de numpy.meshgrid}
+   \item \href{https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.random.choice.html}{Docuemntación de numpy.random.choice}
+   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.inv.html}{Docuemntación de numpy.linalg.inv}
+   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.dot.html}{Docuemntación de numpy.dot}
+   \item \href{https://het.as.utexas.edu/HET/Software/Numpy/reference/generated/numpy.mean.html#numpy.mean}{Docuemntación de numpy.mean}
+   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.zeros.html#numpy.zeros}{Docuemntación de numpy.zeros}
    \item \href{https://stackoverflow.com/questions/32092899/plot-equation-showing-a-circle}{Cómo pintar un circulo con matplotlib}
    \item \href{https://matplotlib.org/}{Documentación de matplotlib}
-   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html}{Documentacion de numpy.linalg.norm}
-   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.delete.html}{Documentacion de numpy.delete}
+   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html}{Docuemntación de numpy.linalg.norm}
+   \item \href{https://docs.scipy.org/doc/numpy/reference/generated/numpy.delete.html}{Docuemntación de numpy.delete}
 
 \end{itemize}
