@@ -1,15 +1,32 @@
 %!TeX spellcheck = es-ES
-\chapter{Problema de regresión}
+\chapter{Problema de clasificación}
 \section{Definición del problema}
-El conjunto que utilizamos en este problema es: `Optical Recognition of Handwritten Digits'
+El conjunto que utilizamos en este problema es: `Optical Recognition of Handwritten Digits'.\\
+Se trata de clasificar una serie de imágenes de números escritos a mano, según pertenezcan a los dígitos del 0 al 9. Estas imágenes se representan como vectores de 65 datos, siendo los 64 primeros enteros en el intervalo $[0,16]$ y el último la clase a la que pertenece el elemento $x$ (dígitos del 0 al 9).\\
+Por tanto se trata de un problema de clasificación en el que cada dato $x_i \in X$ puede pertenecer a 1 de 10 clases distintas y por esto, la solución al problema sera un conjunto de 10 hiperplanos separadores, en el que cada hiperplano dividirá el espacio de puntos de tal manera que a un lado del hiperplano $w_i$ estaran los puntos $x_i \in C_i$ --- siendo $C_i$ la clase del 0 al 9 --- y al otro lado los puntos $ x_j \notin C_i  $.\\
+Esta estrategia de clasificación multiclase se conoce como `one vs the all' --- OVA a partir de ahora ---.
+
 \section{Clases de funciones}
+La clase de funciones que utilizaremos para el ajuste de los datos es la clase de funciones lineales.
+
 \section{Conjuntos de training y test}
+Para este conjunto de datos ya se encuentran creados los conjuntos de training y test\cite{latexcompanion}
+
+
 \section{Preprocesado de datos}
+
 \section{Métrica del error}
+
 \section{Técnicas de ajuste}
+
 \section{Regularización}
+
 \section{Modelos utilizados}
+
 \section{Estimación de hiperparámetros}
+
 \section{Selección del mejor modelo}
-\section{Estimación por valor cruzada}
+
+\section{Estimación por validación cruzada}
+
 \section{Conclusiones}
