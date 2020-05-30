@@ -1,21 +1,59 @@
-import matplotlib.pyplot as plt
-import matplotlib.colors as col
-import matplotlib.patches as mpatches
+def warn(*args, **kwargs):
+    pass
+import warnings
+warnings.warn = warn
+
 import pandas as pd
 import numpy as np
 import sklearn.linear_model as lm
 import sklearn.model_selection as ms
-import sklearn.metrics as metrics 
+import sklearn.metrics as metrics
 
 ###############################################################################
 def obtenerSimetria(x):
     symmetry = 0
-    up = x[:32]
-    down = x[33:]
-    for i in range(31):
-        symmetry = symmetry + abs(up[i] - down[i])
+    X_matriz = []
+    fila = []
+    fila.append(x[0])
+    for i in range(1,np.size(x)):
+        if i%8 == 0 or i == np.size(x) - 1:
+            X_matriz.append(fila)
+            fila = []
+        fila.append(x[i])
 
-    return (symmetry/512)
+    X_matriz = np.array(X_matriz)
+    X_superior = []
+    X_inferior = []
+    for i in range(8):
+        fila = []
+        for j in range(8):
+            if i < j:
+                fila.append(X_matriz[i][j])
+            else:
+                fila.append(0)
+        X_superior.append(fila)
+
+    for i in range(8):
+        fila = []
+        for j in range(8):
+            if i > j:
+                fila.append(X_matriz[i][j])
+            else:
+                fila.append(0)
+        X_inferior.append(fila)
+
+    X_superior = np.array(X_superior)
+    X_inferior = np.array(X_inferior)
+    X_inferior = X_inferior.T
+    X_resta = np.subtract(X_superior,X_inferior)
+
+    for i in range(8):
+        for j in range(8):
+            symmetry = symmetry + abs(X_resta[i][j])
+
+    symmetry = symmetry / 448
+
+    return (symmetry)
 
 def obtenerIntensidad(x):
     intensity = 0
@@ -29,13 +67,6 @@ def transformacionDataSet(X):
     for x in X:
         X_transform.append([1,obtenerIntensidad(x),obtenerSimetria(x)])
 
-    return X_transform
-
-def transformacionDataSetBasica(X):
-    X_transform = []
-    for x in X:
-        X_transform.append(np.concatenate((np.array([1]),x),axis=None))
-        
     return X_transform
 
 def visualizaDatos(n1, n2, X, y, w):
@@ -115,49 +146,58 @@ def parameters_cv(estimator,parameters, scores, X_train, y_train, X_test, y_test
         print(metrics.classification_report(y_true, y_pred))
         print()
         return clf.best_params_
-
-
-
 ###############################################################################
 
-
-
-X_train = np.array(pd.read_csv('optdigits.tra'))
+X_train = np.array(pd.read_csv('datos/optdigits.tra'))
 y_train = X_train[:,64]
 X_train= np.delete(X_train,64,axis=1)
-X_train = transformacionDataSetBasica(X_train)
-
-X_test = np.array(pd.read_csv('optdigits.tes'))
+X_train = transformacionDataSet(X_train)
+X_test = np.array(pd.read_csv('datos/optdigits.tes'))
 y_test = X_test[:,64]
 X_test = np.delete(X_test,64,axis=1)
-X_test = transformacionDataSetBasica(X_test)
+X_test = transformacionDataSet(X_test)
 
 # Set the parameters by cross-validation
-SGD_parameters = [{'loss': ['squared_loss'], 'alpha' : [0.001, 0.01, 1], 'eta0': [0.1, 0.01, 0.001], 'max_iter': [100, 1000, 10000]}]
-Perceptron_parameters = [{'loss': ['perceptron'], 'alpha' : [0.001, 0.01, 1], 'eta0': [0.1, 0.01, 0.001], 'max_iter': [100, 1000, 10000]}]
+SGD_parameters = [{'loss': ['squared_loss'], 'alpha' : [0.0001, 0.001, 0.01, 1], 'eta0': [0.1, 0.01, 0.001], 'max_iter': [100, 1000, 10000]}]
+Perceptron_parameters = [{'loss': ['perceptron'], 'alpha' : [0.0001, 0.001, 0.01, 1], 'eta0': [0.1, 0.01, 0.001], 'max_iter': [100, 1000, 10000]}]
 RL_parameters = [{'C': [0.01, 0.1],'solver': ['newton-cg','lbfgs'], 'max_iter': [100, 1000], 'multi_class': ['ovr', 'multinomial']}]
-scores = ['f1_macro']
+scores = ['accuracy']
 
 np.random.seed(0)
 parameters_best_sgd = parameters_cv(lm.SGDClassifier(), SGD_parameters, scores, X_train, y_train, X_test, y_test)
 parameters_best_perceptron= parameters_cv(lm.SGDClassifier(), Perceptron_parameters, scores, X_train, y_train, X_test, y_test)
 parameters_best_lr = parameters_cv(lm.LogisticRegression(), RL_parameters, scores, X_train, y_train, X_test, y_test)
 
-lr = lm.LogisticRegression(C = parameters_best_lr['C'], solver=parameters_best_lr['solver'], max_iter=parameters_best_lr['max_iter'],multi_class=parameters_best_lr['multi_class']).fit(X_train, y_train)
-print('Mejor configuración para la LR:',parameters_best_lr)
-print('E_in con logisticRegresion:', 1 - lr.score(X_train, y_train))
-scores = ms.cross_val_score(lr, X_train, y_train, cv=5)
-print("Error: %0.2f" % ( 1 - scores.mean()))
-
 sgd = lm.SGDClassifier(loss = parameters_best_sgd['loss'], alpha=parameters_best_sgd['alpha'], eta0=parameters_best_sgd['eta0'], max_iter=parameters_best_sgd['max_iter']).fit(X_train, y_train)
 print('Mejor configuración para el SGD:',parameters_best_sgd)
-print('E_in con SGDClassifier, squared_loss:', 1 - sgd.score(X_train, y_train))
-scores = ms.cross_val_score(lr, X_train, y_train, cv=5)
-print("Error: %0.2f" % ( 1 - scores.mean()))
+scores_cv = ms.cross_val_score(sgd, X_train, y_train, scoring ='accuracy', cv=389)
+print("E_cv con SGDClassifier, squared_loss: %0.2f" % ( 1 - scores_cv.mean()))
 
 perceptron = lm.SGDClassifier(loss = parameters_best_perceptron['loss'], alpha=parameters_best_perceptron['alpha'], eta0=parameters_best_perceptron['eta0'], max_iter=parameters_best_perceptron['max_iter']).fit(X_train, y_train)
 print('Mejor configuración para el perceptron:',parameters_best_perceptron)
-print('E_in con SGDClassifier, perceptron:', 1 - perceptron.score(X_train, y_train))
-scores = ms.cross_val_score(lr, X_train, y_train, cv=5)
-print("Error: %0.2f" % ( 1 - scores.mean()))
+scores_cv = ms.cross_val_score(perceptron, X_train, y_train, scoring ='accuracy', cv=389)
+print("E_cv con SGDClassifier, perceptron: %0.2f" % ( 1 - scores_cv.mean()))
 
+lr = lm.LogisticRegression(C = parameters_best_lr['C'], solver=parameters_best_lr['solver'], max_iter=parameters_best_lr['max_iter'],multi_class=parameters_best_lr['multi_class']).fit(X_train, y_train)
+print('Mejor configuración para la LR:',parameters_best_lr)
+scores_cv = ms.cross_val_score(lr, X_train, y_train, scoring ='accuracy', cv=389)
+print("E_cv con logisticRegresion: %0.2f" % ( 1 - scores_cv.mean()))
+
+
+# sgd = lm.SGDClassifier(loss ='squared_loss', alpha=0.001, eta0=0.001, max_iter=100).fit(X_train, y_train)
+# print('Mejor configuración para el SGD:')
+# scores_cv = ms.cross_val_score(sgd, X_train, y_train, scoring ='accuracy', cv=389)
+# print("E_cv con SGDClassifier, squared_loss: %0.2f" % ( 1 - scores_cv.mean()))
+#
+# perceptron = lm.SGDClassifier(loss ='perceptron', alpha=0.0001, eta0=0.01, max_iter=10000).fit(X_train, y_train)
+# print('Mejor configuración para el perceptron:')
+# scores_cv = ms.cross_val_score(perceptron, X_train, y_train, scoring ='accuracy', cv=389)
+# print("E_cv con SGDClassifier, perceptron: %0.2f" % ( 1 - scores_cv.mean()))
+
+# lr = lm.LogisticRegression(C = 0.1, solver='lbfgs', max_iter=100, multi_class='ovr').fit(X_train, y_train)
+# print('Mejor configuración para la LR:')
+# scores_cv = ms.cross_val_score(lr, X_train, y_train, scoring ='accuracy', cv=389)
+# print("E_cv con logisticRegresion: %0.2f" % ( 1 - scores_cv.mean()))
+
+y_pred = lr.predict(X_test)
+print('E_test para regresion logistica:', 1 - metrics.accuracy_score(y_pred, y_test))
