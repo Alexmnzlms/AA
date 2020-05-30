@@ -1,14 +1,93 @@
 %!TeX spellcheck = es-ES
 \chapter{Problema de regresión}
 \section{Definición del problema}
+El conjunto que utilizamos en este problema es: `Communities and Crime Data Set'. \cite{Communities}\\
+Este conjunto consta de una serie de 1994 datos de comunidades y el número de crimenes violentos asociados a ellos. Se trata por tanto de un problema de regresión, ya que debemos ser capaces de entrenar un modelo que dado un conjunto de datos $x$ sea capaz de predecir el número de crímenes que se puedan producir. Para esto se proporcionan 122 variables predictivas que aportan datos sobre una determinada comunidad y el número de crimenes violentos asociados a estos. La solución a este problema, será un vector de pesos (ŵ) que sea capaz de predecir dado un dato $x$, el número de crimenes que potencialmente se cometerán.
+\\\\
+Para abordar este problema, se elegirán varios modelos de clasificación de datos y se aplicarán a los datos proporcionados para obtener de entre todos ellos, el mejor ajuste posible.\\
+\\
+Para la realización de esta práctica, se recurrirá a la biblioteca Scikit Learn \cite{SkUG} \cite{SkAPI} disponible para Python y orientada totalmente a funcionalidades de machine learning. Tanto los modelos, algoritmos y cualquier otro elemento necesario para realizar el ajuste de los datos se utilizarán los disponibles en esta biblioteca. También se utilizará la biblioteca Python, Numpy \cite{Numpy}, para los cálculos matemáticos e integración con scikit learn.\\
+\\
+Como pautas generales, seguiremos el procedimiento clasico para resolver problemas de machine learning:
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=0.5\textwidth]{Figure_1.png}
+\end{figure}
+
+Como podemos ver en el esquema, primero elegiremos las técnicas y modelos que ajustarán los datos, después estimaremos por validación cruzada los hiperparámetros de los modelos y finalmente utilizaremos estos modelos para obtener una hipótesis de ajuste para los datos del conjunto de training y probaremos este ajuste para los datos de test a fin de comprobar la bondad del mismo.
+
 \section{Clases de funciones}
+Para este problema, al igual que para el caso de clasificación se ha optado por utilizar la clase lineal de funciones ($H^{1}$), esto es simplemente porque debido a la cantidad de información aportada, se ha preferido no realizar ninguna extracción de características o reducción de la dimensionalidad que pudieran alterar los datos obtenidos.
+
 \section{Conjuntos de training y test}
+El conjunto de datos aportado, no posee una separación en conjuntos de training y test, por tanto debemos realizarla manualmente. Haremos uso de la función \textbf{train\_test\_split()}\cite{Split} que separa en una proporción determinada el conjunto $D$ e $y$ (datos y etiquetas) en los conjuntos de training y tests.\\
+Para este caso utilizaremos la regla de oro de la proporción de 80\% conjunto de training y 20\% conjunto de test. Esto nos deja con un total de 1595 datos en el conjunto de training y 399 datos en el conjunto de test. Estos datos son seleccionados aleatoriamente del conjunto original.
+
 \section{Preprocesado de datos}
+En este caso se aplica un preprocesado de datos debido a que existen datos perdidos dentro del conjunto de datos. Lo primero que debemos hacer es encontrar los atributos que tengan un total de datos perdidos superior a un umbral. Estos atributos serán eliminados del conjunto de datos original, por tanto obtendremos una reducción de la dimensionalidad. Los atributos que tengan datos perdidos pero que el número de estos sea inferior a un umbral, estos serán sustituidos por la media de los datos que no están perdidos. Después de realizar el ajuste obtenemos 100 atributos, por lo que la dimensión del problema se a reducido considerablemente, ya que la $d_{vc} = 101$.\\
+También es necesario recalcar que los datos ya se encuentran preprocesados puesto que se les ha aplicado una normalización y ya habiendo tenido dificultades en el problema anterior a la hora de intentar reducir la dimensionalidad, se justifica el no preprocesar los datos en exceso.
+
 \section{Métrica del error}
+Como métrica del error se ha utilizado el error cuadrático medio.\\
+El estimador utilizados por scikit learn \cite{SGDRegressor} posee un método `score'. Este método como devuelve el error del ajuste realizado.\\
+
 \section{Técnicas de ajuste}
+\textbf{Ordinary Least Squares}(OLS): Minimiza la suma residual de cuadrados entre los objetivos observados en el conjunto de datos y los objetivos predichos por la aproximación lineal. Matemáticamente resuelve un problema de la forma: $ min_w = \left \| Xw - y \right \|^{2}_{2} $ \cite{linearmodels}
+
+
 \section{Regularización}
+Como ya sabemos, la regularización de los datos es un proceso vital a fin de evitar el sobre ajuste de los datos.\\
+Scikit learn esta preparado para utilizar distintos esquemas de regularización, aunque utilizaremos el conocido como $l_2$, que es el regularizador por defecto y trata de minimizar la siguiente función de coste:\\\\
+$min_{w,c} \frac{1}{2} w^T w + C \sum_{i=1}^{n}log(exp(-y_i(X^T_iw+c))+1)$ \cite{linearmodels}\\
+
 \section{Modelos utilizados}
+Finalmente pasamos a exponer los modelos que se han utilizado para el ajuste de datos.
+\\Se ha utilizado el \textbf{modelo de regresión lineal} clásico con el ajuste de error cuadrático, este modelo implementa el SGD para realizar el ajuste.
+\\
+Este modelo se ha utilzado con la función SGDRegressor\cite{SGDRegressor} disponible en la biblioteca de scikit learn.\\
+Como vemos, todo los modelos de ajuste son modelos lineales, utilizados en las practicas anteriores, puesto que se ha visto que su desempeño es suficiente para realizar un ajuste de calidad.
+
 \section{Estimación de hiperparámetros}
+Una vez han quedado definido los modelos y las técnicas utilizadas para ajustar los datos, ahora debemos saber cual es la configuración que aporta el mejor ajuste. Para esto, definiremos primero los hiperparámetros para los cuales queremos obtener le valor optimo:
+\\
+Hiperparámetros del modelo de regresión: Para esta implementación nos fijaremos en los siguientes\cite{SGDRegressor}:
+   \begin{itemize}
+      \item \textbf{alpha}: Es la constante que multiplica el termino de regularización. Fija el nivel de regularización del modelo y por defecto tiene un valor de 0.0001. Probaremos a aumentar este valor para comprobar cual es el mas efectivo. Los posibles valores de este hiperparámetros serán: $[0.0001, 0.001, 0.1, 1]$. Recordar que una regularización muy alta puede provocar que el ajuste de los datos sea desastroso y una muy baja puede abocarnos al overfitting.
+      \item \textbf{eta0}: Esta es la tasa de aprendizaje utilizada en el SGD. Por defecto se fija a 0.01, probaremos a utilizar distintos valores para ver que tal se comporta el ajuste con distintas tasas de aprendizaje. Como ya sabemos una tasa de aprendizaje muy alta hará al SGD explorar el espacio de manera muy agresiva con la posibilidad de no encontrar mínimos y una tasa de aprendizaje muy baja puede destruir esta capacidad de exploración del espacio. Probaremos con los valores: $[0.1, 0.01, 0.001]$
+      \item \textbf{max\_iter}: Es el número máximo de iteraciones. Por defecto es 1000. Un número bajo de iteraciones puede no ser suficiente para que el algoritmo no converja (aunque sabemos que ante la presencia de ruido, esto no pasará) y un número alto de las mismas puede ser inncecesario si el minimo se alcanza en las primeras iteraciones del ajuste. Los valores a estimar serán: $[100, 1000, 10000]$
+   \end{itemize}
+
+Una vez definidos los hiperparámetros, definamos como se va a obtener la combinación de hiperparámetros optimas para los ajustes. Para obtener estos parámetros utilizaremos la función de scikit learn \textbf{GridSearchCV}\cite{GridSearchCV}. Esta función nos permitirá definir cuales son los valores de los hiperparámetros que queremos optimizar y probará a ajustar los datos con todos ellos en base a una métrica determinada. El mejor ajuste sera el que mejor obtenga según la métrica especificada y en este caso se utilizará la métrica `neg\_mean\_squared\_error'\cite{MSE} que es la media de error cuadrático negativo.
+\\\\
+Una vez definido todo esto, pasemos a ver cual es el mejor ajuste:
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=0.7\textwidth]{Figure_5.png}
+   \caption{Ajuste del modelo regresión lineal}
+\end{figure}
+
+
+Finalmente se procederá al ajuste de los datos con los siguientes parámetros:
+\begin{itemize}
+   \item SGDRegressor(alpha=0.001, eta0=0.1, max\_iter=10000)
+\end{itemize}
+
+\newpage
+
 \section{Selección del mejor modelo}
+Una vez tenemos los valores óptimos para los hiperparámetros de los que dependen nuestros modelos de ajuste, utilizaremos la validación cruzada para obtener el error que nos dirá cual es el mejor modelo para ajustar los datos.\\
+Para esto nos valdremos de la función \textbf{cross\_val\_score()} \cite{Score} que nos permitirá obtener los diferentes $E_{val}$ para cada conjunto de validación. Habrá tantos conjuntos de validación como elementos tenga el conjunto de training. Aplicaremos la estrategia de Leave-One-Out que consiste en calcular cada $E_val$ como el error obtenido después de aplicar el ajuste del modelo con los N - 1 datos del conjunto training al unico punto que no pertenece a dicho conjunto. Obtendremos el error de validación cruzada $E_{cv} = \frac{1}{N}\sum_{i=1}^{N}E_{val}$), lo que nos permitirá obtener el modelo que mejor ajuste de a nuestros datos.\\
+El $E_{cv}$ obtenido es: 0.02148.
+
 \section{Estimación por validación cruzada}
+Sabemos por tanto, que el $E_{cv}$ es una cota para el $E_{out}$ \cite{Cota}.\\
+$E_{out} \leq E_{cv}$, por tanto $E_{out} \leq 0.02148$ que al ser un valor de error tan bajo, indica que el ajuste es de calidad.\\
+Podemos ahora comparar $E_{out}$ con $E_{test}$. Calculamos $E_{test} = 0.01653$
+\\
+Vemos que en este caso, se cumple que la generalización de $E_{out}$ es correcta, porque $E_{test}$ cumple con la cota a $E_{out}$.
+
 \section{Conclusiones}
+Finalemente pasamos al análisis de resultados, vemos que aunque para este problema se ha simplificado el número de técnicas ajustes y modelos que se han realizado, pero no por ello se ha visto perjudicada la calidad del ajuste obtenido.\\
+El modelo de regresión lineal clásico ha sido capaz de obtener un ajuste excelente para los datos, ya que la cota del $E_{out}$ se encuentra por debajo del 25\% y ademas ha demostrado la buena generalización del ajuste ya que el $E_{test}$ queda contenido en la cota de $E_{out}$.
