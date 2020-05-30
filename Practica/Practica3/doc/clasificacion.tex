@@ -1,32 +1,144 @@
 %!TeX spellcheck = es-ES
 \chapter{Problema de clasificación}
 \section{Definición del problema}
-El conjunto que utilizamos en este problema es: `Optical Recognition of Handwritten Digits'.\\
+El conjunto que utilizamos en este problema es: `Optical Recognition of Handwritten Digits'. \cite{Optical}\\
 Se trata de clasificar una serie de imágenes de números escritos a mano, según pertenezcan a los dígitos del 0 al 9. Estas imágenes se representan como vectores de 65 datos, siendo los 64 primeros enteros en el intervalo $[0,16]$ y el último la clase a la que pertenece el elemento $x$ (dígitos del 0 al 9).\\
-Por tanto se trata de un problema de clasificación en el que cada dato $x_i \in X$ puede pertenecer a 1 de 10 clases distintas y por esto, la solución al problema sera un conjunto de 10 hiperplanos separadores, en el que cada hiperplano dividirá el espacio de puntos de tal manera que a un lado del hiperplano $w_i$ estaran los puntos $x_i \in C_i$ --- siendo $C_i$ la clase del 0 al 9 --- y al otro lado los puntos $ x_j \notin C_i  $.\\
-Esta estrategia de clasificación multiclase se conoce como `one vs the all' --- OVA a partir de ahora ---.
+Por tanto se trata de un problema de clasificación en el que cada dato $x_i \in D$ puede pertenecer a 1 de 10 clases distintas y por esto, la solución al problema sera un conjunto de 10 hiperplanos separadores, en el que cada hiperplano dividirá el espacio de puntos de tal manera que a un lado del hiperplano $w_i$ estarán los puntos $x_i \in C_k$ --- siendo $C_k$ la clase del 0 al 9 --- y al otro lado los puntos $x_i \notin C_k$.\\
+Esta estrategia de clasificación multiclase se conoce como `one vs all' --- OVA a partir de ahora ---.
+\\\\
+Para abordar este problema, se elegirán varios modelos de clasificación de datos y se aplicarán a los datos proporcionados para obtener de entre todos ellos, el mejor ajuste posible.\\
+\\
+Para la realización de esta práctica, se recurrirá a la biblioteca Scikit Learn \cite{SkUG} \cite{SkAPI} disponible para Python y orientada totalmente a funcionalidades de machine learning. Tanto los modelos, algoritmos y cualquier otro elemento necesario para realizar el ajuste de los datos se utilizarán los disponibles en esta biblioteca. También se utilizará la biblioteca Python, Numpy \cite{Numpy}, para los cálculos matemáticos e integración con scikit learn.\\
+\\
+Como pautas generales, seguiremos el procedimiento clasico para resolver problemas de machine learning:
 
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=0.5\textwidth]{Figure_1.png}
+\end{figure}
+
+Como podemos ver en el esquema, primero elegiremos las técnicas y modelos que ajustarán los datos, después estimaremos por validación cruzada los hiperparámetros de los modelos y finalmente utilizaremos estos modelos para obtener una hipotesis de ajuste para los datos del conjunto de training y probaremos este ajuste para los datos de test a fin de commprobar la bondad del mismo.
+\newpage
 \section{Clases de funciones}
-La clase de funciones que utilizaremos para el ajuste de los datos es la clase de funciones lineales.
+Se ha optado por no aplicar ninguna transformación no lineal al conjunto de datos, por tanto, la clase de funciones escogidas son las lineales $H^{1}$. Esto es así debido a que finalmente no se aplicará ningún preprocesado adicional al que los datos ya tiene aplicado --- esto se detallará en profundidad en el apartad de preprocesado de datos---.\\
+Para explicar esto, debemos saber que el vector de 64 características realmente esta representando una imagen de 8x8 pixeles --- después de aplicar un preprocesado que comentaré mas adelante ---. Cada pixel como ya hemos comentado puede tener un valor en el intervalo $[0,16]$.
+Usar una clase de funciones más compleja implicaría utilizar más de 64 parámetros para ajustar los hiperplanos separadores del espacio. Esta transformación de los datos no ayudaría a realizar mejor una clasificación de los datos y si que contribuiría a complicar el proceso en mayor medida. Como veremos a continuación, el modelo lineal es suficiente para obtener un ajsute de buena calidad.
 
 \section{Conjuntos de training y test}
-Para este conjunto de datos ya se encuentran creados los conjuntos de training y test\cite{latexcompanion}
-
+Para este conjunto de datos ya se encuentran creados los conjuntos de training y test.\\
+Como se detalla en la documentación oficial de este dataset \cite{Optical}, 3823 datos pertenecen al conjunto de training y 1797 pertenecen al conjunto de test. Por tanto tenemos una proporcion de 68\% - 32\% para training y test respectivamente.\\
+El conjunto de training se utilizará para el ajuste del modelo, la estimación de los hiperparámetros y la validación de los resultados, mientras que el conjunto de test simplemente se reservará para realizar una estimación del error fuera de la muestra $E_{out}$.
 
 \section{Preprocesado de datos}
+Los datos del conjunto ya se encuentran preprocesados.\\
+Citando a la documentación del dataset \cite{Optical} , se utilizaron programas de preprocesado  para obtener mapas de bits normalizados de los digitos. Los mapas de bits de 32x32 se dividen en bloques no superpuestos de 4x4 y se cuenta el número de píxeles en cada bloque. Esto genera las ya mencionadas matrices de 8x8 donde cada elemento tiene un valor entero en el intervalo $[0,16]$. Todo este proceso se realizó a fin de reducir la dimensionalidad y dar invarianza a las pequeñas distorsiones.\\
+\\
+Además de esta técnica de preprocesado, se ha intentado, sin éxito, reducir la dimensionalidad de la muestra aplicando una extracción de características a los datos.\\
+Concretamente he intentado calcular la simetría y la intensidad de las muestras.\\
+Estas características se han calculado de la siguiente forma:
+\begin{itemize}
+   \item \textbf{Intensidad}: Se suman los valores de cada pixel de la imagen y se divide ente la intensidad máxima posible.
+   \item \textbf{Simetría}: Se extrae la matriz triangular superior e inferior sin tener en cuenta la diagonal y se restan. Se suman los valores absolutos de los elementos de la matriz y se divide entre la máxima antisimetría (la matriz superior llena de 16 y la inferior de 0). Se devuelve 1 menos el valor calculado.
+\end{itemize}
+Empíricamente se ha demostrado que el ajuste obtenido para estos datos es significativamente peor que para los datos sin aplicar dicha transformación.
 
 \section{Métrica del error}
+Como métrica del error se ha utilizado la precisión del ajuste obtenido, es decir, el porcentaje de aciertos en el ajuste obtenido.\\
+Los estimadores utilizados por scikit learn \cite{SGDClassifier} \cite{logisticRegression} poseen un metodo `score'. Este método como devuelve la precisión del ajuste realizado, y por tanto, el error se puede calcular como el número de puntos que no están bien ajustados, es decir, 1 menos el valor devuelto por `score'.\\
+Por comodidad se ha utilizado esta metrica del error porque esta implementada por defecto en todos los estimadores que aporta scikit learn, lo que nos da homogeneidad a la hora de obtener los resultados.
 
 \section{Técnicas de ajuste}
+Los diferentes modelos utilizados utilizan diferentes tecnicas de ajuste:
+\begin{itemize}
+   \item \textbf{BFGS algorithm}: Es la tecinca de ajuste por defecto para la función de regresión logística \cite{linearmodels}\cite{logisticRegression}\cite{BFGS}. Este es un método iterativo para resolver problemas de optimización no lineal sin restricciones. Pertenece a los métodos de Quasi-Newtown, que son métodos que se usan para encontrar ceros o máximos/mínimos locales de funciones como alternativa al método de Newton \cite{Quasi-Newton}.
+   Concretamente, scikit learn implementa LBFGS \cite{LBFGS}, que es una versión de BFGS con una cantidad limitada de memoria. La descripción del algoritmo esta disponible en la bibliografía. \cite{BFGS}\cite{LBFGS}
+   \item \textbf{Newtown-cg}: Metodo de optimización basado en el Metodo de Newton \cite{Newton} y el gradiente conjugado. \cite{CG}
+   \item \textbf{Ordinary Least Squares}(OLS): Minimice la suma residual de cuadrados entre los objetivos observados en el conjunto de datos y los objetivos predichos por la aproximación lineal. Matemáticamente resuelve un problema de la forma: $ min_w = \left \| Xw - y \right \|^{2}_{2} $ \cite{linearmodels}
+   \item \textbf{Perceptron algorithm}: Implementa el algoritmo perceptron para el ajuste de los datos. \cite{perceptron}
+\end{itemize}
 
 \section{Regularización}
-
+Como ya sabemos, la regularización de los datos es un proceso vital a fin de evitar el sobre ajuste de los datos.\\
+Scikit learn esta preparado para utilizar distintos esquemas de regularización, aunque utilizaremos el conocido como $l_2$, que es el regularizador por defecto y trata de minimizar la siguiente función de coste:\\\\
+$min_{w,c} \frac{1}{2} w^T w + C \sum_{i=1}^{n}log(exp(-y_i(X^T_iw+c))+1)$ \cite{linearmodels}\\
+\\
+La razón por la que utilizamos este modelo de regularización y no otro, es porque las tecincas de ajuste de BFGS y Newton-cg no son compatibles con los demás modelos de regularización. Por tanto, para aplicar la misma regularización a todos los modelos, solo utilzaremos este.\\
+\newpage
 \section{Modelos utilizados}
+Finalmente pasamos a exponer los modelos que se han utilizado para el ajuste de datos.
+\\Se ha utilizado el modelo de regresión logística con dos técnicas de ajuste (BFGS y Newton-cg) y dos modelos basados en un ajuste por gradiente descendente estocástico (SGD) (modelo perceptron y clasificación lineal por OLS).
+\\\\
+Estos modelos se ha utilzado con las funciones SGDClassifier\cite{SGDClassifier} y  logisticRegression\cite{logisticRegression} disponibles en la biblioteca de scikit learn:
+\begin{itemize}
+   \item \textbf{Modelo de clasificación lineal}: Este modelo se implementa utilizando la función SGDClassifier y la tecnica de ajuste por OLS. Utiliza un SGD para ajustar los datos según el error aportado por OLS.
+   \item \textbf{Modelo perceptron}: Este modelo también se implementa utilizando la función SGDClassifier sin embargo, el ajuste se realiza según el algoritmo perceptron. Tambien implementa un SGD para el ajuste de los datos.
+   \item \textbf{Modelo de regresión lienal}: Este modelo se implementa mediante la función logisticRegression y dos posibles técnicas de ajute de datos: LBFGS y Newton-cg.
+\end{itemize}
+Como vemos, todo los modelos de ajuste son modelos lineales, utilizados en las practicas anteriores, puesto que se ha visto que su desempeño es suficiente para realizar un ajuste de calidad.
 
 \section{Estimación de hiperparámetros}
+Una vez han quedado definido los modelos y las tecincas utilizadas para ajustar los datos, ahora debemos saber cual es la configuración que aporta el mejor ajuste. Para esto, definiremos primero los hiperparámetros para los cuales queremos obtener le valor optimo:
+\begin{itemize}
+   \item Hiperparámetros del modelo de clasificación y el modelo perceptron: Debido a que ambos modelos se implementan con la misma función SGDClassifier presente en la biblioteca de scikit learn, ambos modelos tienen los mismo hiperparámetros. Para esta implementación nos fijaremos en los siguientes\cite{SGDClassifier}:
+   \begin{itemize}
+      \item \textbf{alpha}: Es la constante que multiplica el termino de regularización. Fija el nivel de regularización del modelo y por defecto tiene un valor de 0.0001. Probaremos a aumentar este valor para comprobar cual es el mas efectivo. Los posibles valores de este hiperparámetros seran: $[0.0001, 0.001, 0.1, 1]$. Recordar que una regularización muy alta puede provocar que el ajuste de los datos sea desastroso y una muy baja puede abocarnos al overfitting.
+      \item \textbf{eta0}: Esta es la tasa de aprendizaje utilizada en el SGD. Por defecto se fija a 0.01, probaremos a utilizar distintos valores para ver que tal se comporta el ajuste con distintas tasas de aprendizaje. Como ya sabemos una tasa de aprendizaje muy alta hará al SGD explorar el espacio de manera muy agresiva con la posibilidad de no encontrar mínimos y una tasa de aprendizaje muy baja puede destruir esta capacidad de exploración del espacio. Probaremos con los valores: $[0.1, 0.01, 0.001]$
+      \item \textbf{max\_iter}: Es el número máximo de iteraciones. Por defecto es 1000. Un número bajo de iteraciones puede no ser suficiente para que el algoritmo no converja (aunque sabemos que ante la presencia de ruido, esto no pasará) y un número alto de las mismas puede ser inncecesario si el minimo se alcanza en las primeras iteraciones del ajuste. Los valores a estimar serán: $[100, 1000, 10000]$
+   \end{itemize}
+   \item Hiperparámetros del modelo de regresión lineal. Para esta implementación nos fijaremos en los siguientes\cite{logisticRegression}:
+   \begin{itemize}
+      \item \textbf{C}: En regresión logistica, es la inversa a la fuerza de regularización, es decir, cuanto más pequeño es su valor, mayor es el nivel de regularización. En este caso tendremos el mismo criterio que en los otros modelos respecto a la regularización. Los posibles valores serán: $[0.01, 0.1]$ y por defecto se fija en 1, es decir, sin regularización.
+      \item \textbf{solver}: El `solver' es la técnica de ajuste utilizada. En este caso al tratarse ambas de técnicas de ajuste de regresión logistica, las compararemos para obtener la técnica que mejor ajuste aporte. Los posibles valores seran lbfgs o newton-cg. La tecnica de ajuste por dfecto es lbfgs.
+      \item \textbf{max\_iter}: Es el número máximo de iteraciones. Seguimos el mismo criterio que para los otros modelos.
+      \item \textbf{multi\_class}: En el modelo de regresión logistica aplicado a problemas de clasificación multiclase, podemos elegir de que forma ajustaremos los datos, es decir, podremos utilizar el modelo OVA o OVR(one vs the rest como se conoce en scikit learn) --- que ya se explico al principio de esta memoria --- o podremos utilizar el modelo multinomial, que utiliza la función de perdida por entropía cruzada para realizar este ajuste. Por defecto este parametro se escoge automáticamente, pero los posibles valores seran ovr o multiclass, para poder saber cuál de los dos modelos realiza un mejor ajuste.
+   \end{itemize}
+\end{itemize}
+
+Una vez definidos los hiperparámetros, definamos como se va a obtener la combinación de hiperparámetros optimas para los ajustes. Para obtener estos parámetros utilizaremos la función de scikit learn \textbf{GridSearchCV}\cite{GridSearchCV}. Esta función nos permitirá definir cuales son los valores de los hiperparámetros que queremos optimizar y probará a ajustar los datos con todos ellos en base a una métrica determinada. El mejor ajuste sera el que mejor obtenga según la métrica especificada y en este caso se utilizará la métrica `accuracy'\cite{Accuracy} que es la media de aciertos en la clasificación de los datos.
+\\\\
+Una vez definido todo esto, pasemos a ver cual es el mejor ajuste:
+
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=0.7\textwidth]{Figure_2.png}
+   \caption{Ajuste del modelo clasificación lineal con OLS}
+\end{figure}
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=0.7\textwidth]{Figure_3.png}
+   \caption{Ajuste del modelo perceptron}
+\end{figure}
+\begin{figure}[H]
+   \centering
+   \includegraphics[width=0.7\textwidth]{Figure_4.png}
+   \caption{Ajuste del modelo regresión lineal}
+\end{figure}
+
+Finalmente se procederá al ajuste de los datos con los siguientes parámetros:
+\begin{itemize}
+   \item SGDClassifier(loss=`squared\_loss', alpha=0.001, eta0=0.001, max\_iter=100)
+   \item SGDClassifier(loss=`perceptron', alpha=0.0001, eta0=0.01, max\_iter=10000)
+   \item logisticRegression(C=0.1, solver=`lbfgs', max\_iter=100, multi\_class=`ovr')
+\end{itemize}
 
 \section{Selección del mejor modelo}
+Una vez tenemos los valores óptimos para los hiperparámetros de los que dependen nuestros modelos de ajuste, utilizaremos la validación cruzada para obtener el error que nos dirá cual es el mejor modelo para ajustar los datos.\\
+Para esto nos valdremos de la función \textbf{cross\_val\_score()} \cite{Score} que nos permitirá obtener los diferentes $E_{val}$ para cada conjunto de validación. Habra tantos conjuntos de validación como elementos tenga la clase con mayor número de datos, en este caso 389 conjuntos de validación. Cada $E_{val}$ se obtiene calculando la precisión media del ajuste para los datos de cada conjunto de validación. Obtendremos el error de validación cruzada $E_{cv} = \frac{1}{N}\sum_{i=1}^{N}E_{val}$), lo que nos permitirá obtener el modelo que mejor ajuste de a nuestros datos.\\
+Los $E_{cv}$ obtenidos para los distintos modelos son:
+\begin{itemize}
+   \item Para el modelo de clasificación lineal con OLS: 0.90
+   \item Para el modelo perceptron: 0.05
+   \item Para el modelo de regresión logística: 0.03
+\end{itemize}
+Por tanto, podemos observar que el modelo que mejor ajusta los datos es el modelo de regresión logística con un $E_{cv}=0.03$.
 
 \section{Estimación por validación cruzada}
+Sabemos por tanto, que el $E_{cv}$ es una cota para el $E_{out}$ \cite{Cota}.\\
+$E_{out} \leq E_{cv}$, por tanto $E_{out} \leq 0.03$ que al ser un valor de error tan bajo, indica que el ajuste es de calidad.\\
+Podemos ahora comparar $E_{out}$ con $E_{test}$ para el modelo de regresión logística. Calculamos $E_{test}$ como la precison del ajuste del modelo de regresión lineal y obtenemos $E_{test}=0.05$.
+\\
+Vemos que es extraño, porque aun habiendo acotado $E_{out}$ en función a $E_{cv}$, vemos que $E_{test}$ supera esta cota. Esto puede deverse a factores como la alta dimensionalidad de los datos (Tiene una $d_{vc} = 65)$ o a que el ajuste realizado no tiene tanta calidad como aportan los datos de validación cruzada.
 
 \section{Conclusiones}
+Finalmente, después de la proposición de la hipótesis, la prueba de distintos modelos y la obtención de los resultados, llega el análisis de los mismos. Podemos concluir que la elección de mantener una dimensionalidad alta en los datos, nos ha llevado a realizar un ajuste de calidad que pese a que tiene un $E_{out}$ considerablemente pequeño, no generaliza con la precisión esperada, puesto que el $E_{test}$ supera al $E_{out}$, sin embargo, esta alta dimensionalidad ha dado mejores resultados que intentar reducir la dimensionalidad, cosa que disparó el error calculado a valores altísimos.\\
+Por tanto concluyo con que la calidad del ajuste es suficiente para desempeñar un buen papel a la hora de clasificar nuevos datos en el futuro.
