@@ -2,13 +2,13 @@
 \chapter{Problema de regresión}
 \section{Definición del problema}
 El conjunto que utilizamos en este problema es: `Communities and Crime Data Set'. \cite{Communities}\\
-Este conjunto consta de una serie de 1994 datos de comunidades y el número de crimenes violentos asociados a ellos. Se trata por tanto de un problema de regresión, ya que debemos ser capaces de entrenar un modelo que dado un conjunto de datos $x$ sea capaz de predecir el número de crímenes que se puedan producir. Para esto se proporcionan 122 variables predictivas que aportan datos sobre una determinada comunidad y el número de crimenes violentos asociados a estos. La solución a este problema, será un vector de pesos (ŵ) que sea capaz de predecir dado un dato $x$, el número de crimenes que potencialmente se cometerán.
+Este conjunto consta de una serie de 1994 datos de comunidades y el número de crímenes violentos asociados a ellos. Se trata por tanto de un problema de regresión, ya que debemos ser capaces de entrenar un modelo que dado un conjunto de datos $x$ sea capaz de predecir el número de crímenes que se puedan producir. Para esto se proporcionan 122 variables predictivas que aportan datos sobre una determinada comunidad y el número de crímenes violentos asociados a estos. La solución a este problema, será un vector de pesos (ŵ) que sea capaz de predecir dado un dato $x$, el número de crímenes que potencialmente se cometerán.
 \\\\
 Para abordar este problema, se elegirán varios modelos de clasificación de datos y se aplicarán a los datos proporcionados para obtener de entre todos ellos, el mejor ajuste posible.\\
 \\
 Para la realización de esta práctica, se recurrirá a la biblioteca Scikit Learn \cite{SkUG} \cite{SkAPI} disponible para Python y orientada totalmente a funcionalidades de machine learning. Tanto los modelos, algoritmos y cualquier otro elemento necesario para realizar el ajuste de los datos se utilizarán los disponibles en esta biblioteca. También se utilizará la biblioteca Python, Numpy \cite{Numpy}, para los cálculos matemáticos e integración con scikit learn.\\
 \\
-Como pautas generales, seguiremos el procedimiento clasico para resolver problemas de machine learning:
+Como pautas generales, seguiremos el procedimiento clásico para resolver problemas de machine learning:
 
 \begin{figure}[h]
    \centering
@@ -30,7 +30,7 @@ También es necesario recalcar que los datos ya se encuentran preprocesados pues
 
 \section{Métrica del error}
 Como métrica del error se ha utilizado el error cuadrático medio.\\
-El estimador utilizados por scikit learn \cite{SGDRegressor} posee un método `score'. Este método como devuelve el error del ajuste realizado.\\
+El estimador utilizado por scikit learn \cite{SGDRegressor} posee un método `score'. Este método como devuelve el error del ajuste realizado.\\
 
 \section{Técnicas de ajuste}
 \textbf{Ordinary Least Squares}(OLS): Minimiza la suma residual de cuadrados entre los objetivos observados en el conjunto de datos y los objetivos predichos por la aproximación lineal. Matemáticamente resuelve un problema de la forma: $ min_w = \left \| Xw - y \right \|^{2}_{2} $ \cite{linearmodels}
@@ -43,13 +43,14 @@ $min_{w,c} \frac{1}{2} w^T w + C \sum_{i=1}^{n}log(exp(-y_i(X^T_iw+c))+1)$ \cite
 
 \section{Modelos utilizados}
 Finalmente pasamos a exponer los modelos que se han utilizado para el ajuste de datos.
-\\Se ha utilizado el \textbf{modelo de regresión lineal} clásico con el ajuste de error cuadrático, este modelo implementa el SGD para realizar el ajuste.
 \\
-Este modelo se ha utilzado con la función SGDRegressor\cite{SGDRegressor} disponible en la biblioteca de scikit learn.\\
-Como vemos, todo los modelos de ajuste son modelos lineales, utilizados en las practicas anteriores, puesto que se ha visto que su desempeño es suficiente para realizar un ajuste de calidad.
+Se ha utilizado el \textbf{modelo de regresión lineal} clásico con el ajuste de error cuadrático, este modelo implementa el SGD para realizar el ajuste.
+\\
+Este modelo se ha utilizado con la función SGDRegressor\cite{SGDRegressor} disponible en la biblioteca de scikit learn.\\
+Como vemos, el modelo de ajuste es lineal, al igual que los utilizados en las practicas anteriores, puesto que se ha visto que su desempeño es suficiente para realizar un ajuste de calidad.
 
 \section{Estimación de hiperparámetros}
-Una vez han quedado definido los modelos y las técnicas utilizadas para ajustar los datos, ahora debemos saber cual es la configuración que aporta el mejor ajuste. Para esto, definiremos primero los hiperparámetros para los cuales queremos obtener le valor optimo:
+Una vez han quedado definido el modelo y las técnicas utilizadas para ajustar los datos, ahora debemos saber cual es la configuración que aporta el mejor ajuste. Para esto, definiremos primero los hiperparámetros para los cuales queremos obtener le valor optimo:
 \\
 Hiperparámetros del modelo de regresión: Para esta implementación nos fijaremos en los siguientes\cite{SGDRegressor}:
    \begin{itemize}
@@ -78,7 +79,7 @@ Finalmente se procederá al ajuste de los datos con los siguientes parámetros:
 
 \section{Selección del mejor modelo}
 Una vez tenemos los valores óptimos para los hiperparámetros de los que dependen nuestros modelos de ajuste, utilizaremos la validación cruzada para obtener el error que nos dirá cual es el mejor modelo para ajustar los datos.\\
-Para esto nos valdremos de la función \textbf{cross\_val\_score()} \cite{Score} que nos permitirá obtener los diferentes $E_{val}$ para cada conjunto de validación. Habrá tantos conjuntos de validación como elementos tenga el conjunto de training. Aplicaremos la estrategia de Leave-One-Out que consiste en calcular cada $E_val$ como el error obtenido después de aplicar el ajuste del modelo con los N - 1 datos del conjunto training al unico punto que no pertenece a dicho conjunto. Obtendremos el error de validación cruzada $E_{cv} = \frac{1}{N}\sum_{i=1}^{N}E_{val}$), lo que nos permitirá obtener el modelo que mejor ajuste de a nuestros datos.\\
+Para esto nos valdremos de la función \textbf{cross\_val\_score()} \cite{Score} que nos permitirá obtener los diferentes $E_{val}$ para cada conjunto de validación. Habrá tantos conjuntos de validación como elementos tenga el conjunto de training. Aplicaremos la estrategia de Leave-One-Out que consiste en calcular cada $E_val$ como el error obtenido después de aplicar el ajuste del modelo con los N - 1 datos del conjunto training al único punto que no pertenece a dicho conjunto. Obtendremos el error de validación cruzada $E_{cv} = \frac{1}{N}\sum_{i=1}^{N}E_{val}$), lo que nos permitirá obtener el modelo que mejor ajuste de a nuestros datos.\\
 El $E_{cv}$ obtenido es: 0.02148.
 
 \section{Estimación por validación cruzada}
@@ -89,5 +90,5 @@ Podemos ahora comparar $E_{out}$ con $E_{test}$. Calculamos $E_{test} = 0.01653$
 Vemos que en este caso, se cumple que la generalización de $E_{out}$ es correcta, porque $E_{test}$ cumple con la cota a $E_{out}$.
 
 \section{Conclusiones}
-Finalemente pasamos al análisis de resultados, vemos que aunque para este problema se ha simplificado el número de técnicas ajustes y modelos que se han realizado, pero no por ello se ha visto perjudicada la calidad del ajuste obtenido.\\
+Finalmente pasamos al análisis de resultados, vemos que aunque para este problema se ha simplificado el número de técnicas ajustes y modelos que se han realizado, pero no por ello se ha visto perjudicada la calidad del ajuste obtenido.\\
 El modelo de regresión lineal clásico ha sido capaz de obtener un ajuste excelente para los datos, ya que la cota del $E_{out}$ se encuentra por debajo del 25\% y ademas ha demostrado la buena generalización del ajuste ya que el $E_{test}$ queda contenido en la cota de $E_{out}$.
